@@ -1,0 +1,87 @@
+[theme]
+
+base = "dark"
+
+# --- Core colors ---
+# Deep navy background
+backgroundColor = "#0d1b2a"
+
+# Slightly lighter navy for widgets, sidebars, cards
+secondaryBackgroundColor = "#1b2e45"
+
+# Soft white for primary text — not pure white to reduce eye strain
+textColor = "#e8edf2"
+
+# Bright teal-blue as the primary accent — complements navy without being generic
+primaryColor = "#4da6ff"
+
+# --- Palette colors ---
+blueColor   = "#4da6ff"
+redColor    = "#e05c5c"
+orangeColor = "#f28e2b"
+yellowColor = "#f5c842"
+greenColor  = "#3db87a"
+violetColor = "#9b72e6"
+grayColor   = "#6b7a99"
+
+# --- Border ---
+borderColor = "#2a3f5f"
+
+# --- Widget border ---
+showWidgetBorder   = true
+showSidebarBorder  = false
+
+# --- Corner radius ---
+baseRadius   = "medium"
+buttonRadius = "medium"
+
+# --- Fonts ---
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+headingFont = "Sora:https://fonts.googleapis.com/css2?family=Sora:wght@600;700&display=swap"
+codeFont = "monospace"
+
+# --- Font sizes & weights ---
+baseFontSize   = 15
+baseFontWeight = 400
+headingFontWeights = [700, 600, 600, 600, 600, 600]
+
+# --- Chart categorical colors ---
+# Navy-complementary palette: blue, teal, gold, coral, violet, green, orange, slate
+chartCategoricalColors = [
+    "#4da6ff",
+    "#3db87a",
+    "#f5c842",
+    "#e05c5c",
+    "#9b72e6",
+    "#f28e2b",
+    "#50c8c6",
+    "#6b7a99",
+]
+
+# --- Chart sequential colors (light → dark teal-blue gradient) ---
+chartSequentialColors = [
+    "#e4f3ff",
+    "#b8dcff",
+    "#8cc5ff",
+    "#60aeff",
+    "#4da6ff",
+    "#2e8de0",
+    "#1a6fba",
+    "#0f5294",
+    "#0a3d6e",
+    "#062848",
+]
+
+# --- Chart diverging colors (coral → navy) ---
+chartDivergingColors = [
+    "#7d1f1f",
+    "#bd3a3a",
+    "#e05c5c",
+    "#f0968e",
+    "#f5c9c4",
+    "#b8dcff",
+    "#60aeff",
+    "#1a6fba",
+    "#0a3d6e",
+    "#062848",
+]

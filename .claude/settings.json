@@ -1,0 +1,68 @@
+{
+  "sandbox": {
+    "enabled": true
+  },
+  "permissions": {
+    "allow": [
+      "Read(**/*.py)",
+      "Read(.streamlit/config.toml)",
+      "Read(**/*.md)",
+      "Read(**/*.txt)",
+      "Read(**/*.json)",
+      "Read(**/*.yaml)",
+      "Read(**/*.yml)",
+      "Read(**/*.css)",
+      "Read(**/*.html)",
+      "Bash(git status)",
+      "Bash(git diff)",
+      "Bash(git log)",
+      "Bash(git add)",
+      "Bash(git commit)",
+      "Bash(pip install *)",
+      "Bash(pip list)",
+      "Bash(streamlit run *)",
+      "Bash(python *)",
+      "Bash(pytest *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git reset *)",
+      "Bash(git rebase *)",
+      "Bash(git merge *)",
+      "Bash(rm *)",
+      "Bash(mv *)"
+    ],
+    "deny": [
+      "Read(../)",
+      "Read(../../)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/**)",
+      "Read(~/.bashrc)",
+      "Read(~/.zshrc)",
+      "Read(~/.profile)",
+      "Read(/etc/**)",
+      "Read(/usr/**)",
+      "Read(/var/**)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./.streamlit/secrets.toml)",
+      "Read(**/credentials/**)",
+      "Read(**/.aws/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/*.cert)",
+      "Read(**/.ssh/**)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(curl * | bash)",
+      "Bash(wget * | bash)",
+      "Bash(chmod 777 *)"
+    ]
+  }
+}
