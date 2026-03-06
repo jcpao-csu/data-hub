@@ -2,7 +2,7 @@
 
 import streamlit as st
 from pathlib import Path
-from session_state import initialize_session_state, render_sidebar
+from session_state import initialize_session_state
 
 # --- Configure Streamlit page settings --- 
 
@@ -23,17 +23,15 @@ st.set_page_config(
 # --- JCPAO Streamlit page logo --- 
 st.logo(jcpao_logo, size="large", link="https://www.jacksoncountyprosecutor.com")
 
-# --- Steamlit sidebar --- 
+# --- Initialize session state ---
 initialize_session_state()
-
-with st.sidebar:
-    render_sidebar()
 
 # --- Page Navigation ---
 pages = {
     "Prosecuting Cases": [
         st.Page("pages/case_pages/main_view.py", title="Overview"),
-        st.Page("pages/ss_test.py", title="DEV TESTING"),
+        st.Page("pages/case_pages/overview.py", title="Overview2"),
+        # st.Page("pages/ss_test.py", title="DEV TESTING"),
         # st.Page("pages/case_pages/rcvd_cases.py", title="Received Cases"),
         # st.Page("pages/case_pages/fld_cases.py", title="Filed Cases"),
         # st.Page("pages/case_pages/ntfld_cases.py", title="Not Filed Cases"),

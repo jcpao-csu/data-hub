@@ -22,6 +22,14 @@ ruff check .
 ruff format .
 ```
 
+## Database
+@docs/schema.md
+
+When writing new dashboard metrics:
+- Always use parameterized queries
+- Prefer CTEs for complex queries
+- database_url in read_data.py for the connection string 
+
 ## Architecture
 
 ### Entry Point
@@ -69,6 +77,9 @@ Several files at the root are in-progress utilities (not imported by production 
 ### Secrets & Local Dev
 - **Production**: secrets in Streamlit Cloud; accessed via `st.secrets["sqlalchemy"]["database_url"]`
 - **Local**: `../jcpao-csu.env` (parent directory, not committed). The app falls back to `os.getenv("SQLALCHEMY_DATABASE_URL")` when `st.secrets` is unavailable.
+
+## Styling
+- Commenting in .py files should just be with a `#` or `##` or `###` (if applicable), no need to add line segments
 
 ## Deployment
 

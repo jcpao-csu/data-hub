@@ -3,65 +3,53 @@ import pandas as pd
 from pathlib import Path
 import altair as alt
 
-from read_data import RCVD, FLD, NTFLD, DISP
-
-# --- Initialize session state ---
-
-if "rcvd_df" not in st.session_state:
-    st.session_state["rcvd_df"] = RCVD
-
-if "fld_df" not in st.session_state:
-    st.session_state["fld_df"] = FLD
-
-if "ntfld_df" not in st.session_state:
-    st.session_state["ntfld_df"] = NTFLD
-
-if "disp_df" not in st.session_state:
-    st.session_state["disp_df"] = DISP
+from session_state import get_filtered_data, render_sidebar
 
 # --- Callback functions ---
 
 def update_df():
+    _rcvd, _fld, _ntfld, _disp = get_filtered_data()
 
-    # Initialize DFs
-    rcvd_df = RCVD.copy()
-    rcvd_df = rcvd_df.loc[rcvd_df["ipvi"]] # .copy().reset_index(drop=True)
+    rcvd_df = _rcvd.loc[_rcvd["ipvi"]].copy()
+    fld_df   = _fld.copy()
+    ntfld_df = _ntfld.copy()
+    disp_df  = _disp.copy()
 
-    fld_df = FLD.copy()
-    ntfld_df = NTFLD.copy()
-    disp_df = DISP.copy()
-    
-    # IPVI Filter
-    if st.session_state["ipvi_filter"] != "All": 
-    
-        # IPV Homicides - homicide
+    # IPVI crime-type filter
+    if st.session_state["ipvi_filter"] != "All":
+
         if st.session_state["ipvi_filter"] == "Homicide":
-            rcvd_df = rcvd_df.loc[rcvd_df["homicide"].fillna(False)] # .copy().reset_index(drop=True)
+            rcvd_df = rcvd_df.loc[rcvd_df["homicide"].fillna(False)]
 
-        # IPV Property - property_damage / stealing / stolen_property / robbery / burglary / stealing vehicle
         elif st.session_state["ipvi_filter"] == "Property":
             property_cols = ["property_damage", "stealing", "stolen_property", "robbery", "burglary", "stealing_vehicle"]
             rcvd_df = rcvd_df.loc[rcvd_df[property_cols].any(axis=1)]
 
-        # IPV Harassment 
         elif st.session_state["ipvi_filter"] == "Harassment":
             rcvd_df = rcvd_df.loc[rcvd_df["harassment"].fillna(False)]
 
-        # IPV Stalking 
         elif st.session_state["ipvi_filter"] == "Stalking":
             rcvd_df = rcvd_df.loc[rcvd_df["stalking"].fillna(False)]
 
     filtered_cases = rcvd_df["pbk_num"].unique().tolist()
-
-    fld_df = fld_df.loc[fld_df["pbk_num"].isin(filtered_cases)]
+    fld_df   = fld_df.loc[fld_df["pbk_num"].isin(filtered_cases)]
     ntfld_df = ntfld_df.loc[ntfld_df["pbk_num"].isin(filtered_cases)]
-    disp_df = disp_df.loc[disp_df["pbk_num"].isin(filtered_cases)]
+    disp_df  = disp_df.loc[disp_df["pbk_num"].isin(filtered_cases)]
 
-    # Update session state
-    st.session_state["rcvd_df"] = rcvd_df.reset_index(drop=True)
-    st.session_state["fld_df"] = fld_df.reset_index(drop=True)
+    st.session_state["rcvd_df"]  = rcvd_df.reset_index(drop=True)
+    st.session_state["fld_df"]   = fld_df.reset_index(drop=True)
     st.session_state["ntfld_df"] = ntfld_df.reset_index(drop=True)
-    st.session_state["disp_df"] = disp_df.reset_index(drop=True)
+    st.session_state["disp_df"]  = disp_df.reset_index(drop=True)
+
+
+# --- Initialize session state ---
+
+if "rcvd_df" not in st.session_state:
+    _rcvd, _fld, _ntfld, _disp = get_filtered_data()
+    st.session_state["rcvd_df"]  = _rcvd[_rcvd["ipvi"]].reset_index(drop=True)
+    st.session_state["fld_df"]   = _fld.reset_index(drop=True)
+    st.session_state["ntfld_df"] = _ntfld.reset_index(drop=True)
+    st.session_state["disp_df"]  = _disp.reset_index(drop=True)
 
 
 # --- Sidebar filter --- 
@@ -97,7 +85,7 @@ with st.sidebar:
         width="stretch"
     )
 
-    st.divider()
+    render_sidebar()
 
 
 # --- Streamlit page title ---

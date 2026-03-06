@@ -6,21 +6,7 @@ from datetime import datetime
 import altair as alt
 import plotly.graph_objects as go
 
-from read_data import RCVD, FLD, NTFLD, DISP
-
-
-# --- Initialize requisite objects ---
-# today = datetime.now() 
-# today_date = today.date()
-# current_year = today.year
-
-today = pd.Timestamp.now()
-today_date = today.date()
-current_year = today.year
-year_range = pd.period_range(start="2016", end=today_date, freq="Y")
-month_range = pd.period_range(start="2016", end=today_date, freq="M")
-quarter_range = pd.period_range(start="2016", end=today_date, freq="Q")
-week_range = pd.period_range(start="2016", end=today_date, freq="W") # Mon - Sun (like Shoot Review)
+from read_data import RCVD, MSHP_CODES
 
 # --- Get last updated date --- 
 def post_last_updated(
@@ -82,6 +68,8 @@ def stat1a_total(
         Returns stat summary
 
     """
+
+    today = pd.Timestamp.now()
 
     # Convert date col to datetime
     df[date_col] = pd.to_datetime(df[date_col])
@@ -150,11 +138,13 @@ def stat1b_total_ytd(
 
     """
 
+    today = pd.Timestamp.now()
+
     # Prepare DF for groupby
     df[date_col] = pd.to_datetime(df[date_col])
     df["year"] = df[date_col].dt.year # .dt.to_period("Y") -- convert datetime column to 'period' object / a time interval, rather than a timestamp: 'Y' / 'M' / 'Q' / 'W' / 'D' / 'H'
 
-    # Filter DF to cases processed as of today's date 
+    # Filter DF to cases processed as of today's date
     ytd_mask = (
         (df[date_col].dt.month < today.month) |
         ((df[date_col].dt.month == today.month) & (df[date_col].dt.day <= today.day))
@@ -219,6 +209,8 @@ def stat1c_total_month(
         Returns stat summary
 
     """
+
+    today = pd.Timestamp.now()
 
     # Prepare DF for groupby
     df[date_col] = pd.to_datetime(df[date_col])
@@ -321,6 +313,9 @@ def stat2a_total_by_year(
         Returns stat summary
     """
 
+    today = pd.Timestamp.now()
+    current_year = today.year
+
     # Define prep_df() to get summary totals by case status and year
     def prep_df(df: pd.DataFrame, date_col: str, status: str) -> pd.DataFrame:
         """Returns summarized DF of total cases by year with custom 'Case Status' column"""
@@ -353,7 +348,7 @@ def stat2a_total_by_year(
     # Final cleaning
     df["Case Status"] = pd.Categorical(df["Case Status"], categories=["Received", "Filed", "Not Filed", "Disposed"], ordered=True)
     df = df.sort_values(["Year", "Case Status"], ascending=[False, True], ignore_index=True)
-    df["Year"] = ["2025 YTD" if year == 2025 else str(year) for year in df["Year"]]
+    df["Year"] = [f"{current_year} YTD" if year == current_year else str(year) for year in df["Year"]]
 
     # Visualize as altair bar chart
     order = ["Received", "Filed", "Not Filed", "Disposed"]
@@ -364,7 +359,7 @@ def stat2a_total_by_year(
         .encode(
             x="Year:O",
             y=alt.Y("Total Cases:Q", title="Case Volume"),
-            color=alt.Color("Case Status:N", sort=order),  # 👈 enforce order
+            color=alt.Color("Case Status:N", sort=order),
             xOffset=alt.XOffset("Case Status:N", sort=order)
         )
         .properties(
@@ -374,7 +369,7 @@ def stat2a_total_by_year(
                 "fontSize": 24,
                 "fontWeight": "bold"
             }
-        ) # .interactive()
+        )
     )
 
     st.altair_chart(chart, use_container_width=True)
@@ -542,126 +537,18 @@ def total_by_agency(rcvd: pd.DataFrame, fld: pd.DataFrame, ntfld: pd.DataFrame, 
 
     # Final cleaning
     df["Case Status"] = pd.Categorical(df["Case Status"], categories=["Received", "Filed", "Not Filed", "Disposed"], ordered=True)
-    df["Year"] = ["2025 YTD" if year == 2025 else str(year) for year in df["Year"]]
+    today = pd.Timestamp.now()
+    current_year = today.year
+    df["Year"] = [f"{current_year} YTD" if year == current_year else str(year) for year in df["Year"]]
 
-    df = df[df["Year"]=="2025 YTD"]
+    df = df[df["Year"] == f"{current_year} YTD"]
 
     return df
 
-# Bar Chart of Processed Cases by Referring Agency
-cases_by_agency = st.container()
 
-with cases_by_agency:
-    # st.dataframe(total_by_agency(RCVD, FLD, NTFLD, DISP))
-    # st.bar_chart(total_by_agency(RCVD, FLD, NTFLD, DISP), x="agency_name", y="Total Cases", color="Case Status", stack=False)
+# --- RCVD DASHBOARD STATS ---
 
-    order = ["Received", "Filed", "Not Filed", "Disposed"]
-    agency_df = total_by_agency(RCVD, FLD, NTFLD, DISP)
-
-    top_ten_agencies = (
-        agency_df.groupby("agency_name", as_index=False)["Total Cases"]
-        .sum()
-        .sort_values("Total Cases", ascending=False)
-        .head(10)
-    )
-
-    df_top10 = agency_df[agency_df["agency_name"].isin(top_ten_agencies["agency_name"])]
-
-    chart = (
-        alt.Chart(df_top10)
-        .mark_bar()
-        .encode(
-            y=alt.Y("agency_name:O", title="Police Agency", sort=top_ten_agencies["agency_name"].tolist()),
-            x=alt.X("Total Cases:Q", title="Case Volume"),
-            color=alt.Color("Case Status:N", sort=order),  # 👈 enforce order
-            yOffset=alt.YOffset("Case Status:N", sort=order),
-            tooltip=[
-                alt.Tooltip("agency_name:N", title="Agency"),
-                alt.Tooltip("Case Status:N", title="Status"),
-                alt.Tooltip("Total Cases:Q", title="Total Cases")
-            ]
-        )
-        .properties(
-            title={
-                "text": "Cases Processed by Referring Police Agency and Status",
-                "anchor": "middle",
-                "fontSize": 24,
-                "fontWeight": "bold"
-            }
-        )
-    )
-
-    st.altair_chart(chart, use_container_width=True)
-
-    test_df = agency_df
-
-    # Sort by Year ascending, then Case Status descending
-    sorted_df = test_df.sort_values(by=["Case Status", "Total Cases"], ascending=[True, False])
-    # cols = st.columns(4)
-    # with cols[0]:
-    #     st.write(sorted_df[sorted_df['Case Status']=="Received"]['agency_name'].tolist())
-    # with cols[1]:
-    #     st.write(sorted_df[sorted_df['Case Status']=="Filed"]['agency_name'].tolist())
-    # with cols[2]:
-    #     st.write(sorted_df[sorted_df['Case Status']=="Not Filed"]['agency_name'].tolist())
-    # with cols[3]:
-    #     st.write(sorted_df[sorted_df['Case Status']=="Disposed"]['agency_name'].tolist())
-
-
-# --- RCVD DASHBOARD STATS --- 
-
-## RCVD cases broken down by: under review / completed review (i.e. filed / not filed)
-
-## 
-
-## Remaining cases under review 
-def under_review_time_series(
-    rcvd_df: pd.DataFrame,
-    fld_df: pd.DataFrame,
-    ntfld_df: pd.DataFrame,
-):
-
-    # Import requisite DFs for timeseries DF output
-    rcvd = rcvd_df[["pbk_num", "ref_date"]].copy()
-    fld = fld_df[["pbk_num", "earliest_fld_date"]].copy()
-    ntfld = ntfld_df[["pbk_num", "earliest_ntfld_date"]].copy()
-
-    # Merge DFs
-    df = rcvd.merge(fld, how="left", on="pbk_num") # merge onto RCVD DF
-    df = df.merge(ntfld, how="left", on="pbk_num")
-
-    # Reassign column names
-    df = df.assign(
-        date_received=pd.to_datetime(df["ref_date"]),
-        date_filed=pd.to_datetime(df["earliest_fld_date"]),
-        date_not_filed=pd.to_datetime(df["earliest_ntfld_date"]),
-    )
-
-    # Define your date range (from first received to today)
-    date_range = pd.date_range(df["date_received"].min(), today, freq="D") # min date should be 2016-01-01 / max date should be pd.Timestamp.today()
-
-    # For each date, count how many are open
-    results = []
-    for d in date_range:
-        open_mask = (
-            (df["date_received"] <= d) & # if ref date is prior to select date
-            (
-                (df["date_filed"].isna() | (df["date_filed"] > d)) & # if not yet filed by select date
-                (df["date_not_filed"].isna() | (df["date_not_filed"] > d)) # if not yet NOT filed by select date
-            )
-        )
-        count_open = open_mask.sum()
-        results.append({"date": d, "open_cases": count_open})
-
-    # Produce time series DF
-    time_series = pd.DataFrame(results)
-
-    # Streamlit display 
-
-    # Return summary stats
-    return f""
-
-
+## Remaining cases under review
 def under_review_time_series(
     rcvd_df: pd.DataFrame,
     fld_df: pd.DataFrame,
@@ -773,11 +660,7 @@ def under_review_time_series(
     # Return summary stats
     return f""
 
-## Time from case received to case filed / not filed 
-
-import pandas as pd
-import altair as alt
-import streamlit as st
+## Time from case received to case filed / not filed
 
 def avg_days_to_file_chart(
     df: pd.DataFrame, # fld df 
@@ -875,5 +758,745 @@ def avg_days_to_file_chart(
 
 
 
-## Time from case filed to case disposed 
+## Time from case filed to case disposed
 
+
+# --- Case Year/Agency Summary (data-only helpers used by main_view.py) ---
+
+def total_by_year(rcvd: pd.DataFrame, fld: pd.DataFrame, ntfld: pd.DataFrame, disp: pd.DataFrame) -> pd.DataFrame:
+    """Return a tidy DataFrame of case counts by year and case status for charting."""
+
+    today = pd.Timestamp.now()
+    current_year = today.year
+
+    def prep_df(df: pd.DataFrame, date_col: str, status: str) -> pd.DataFrame:
+        df = df.copy()
+        df[date_col] = pd.to_datetime(df[date_col])
+        df["Year"] = df[date_col].dt.year
+        df = df.groupby("Year")["pbk_num"].count().reset_index()
+        df.rename(columns={"pbk_num": "Total Cases"}, inplace=True)
+        df["Case Status"] = status
+        return df
+
+    dfs = [
+        prep_df(rcvd, "ref_date", "Received"),
+        prep_df(fld, "earliest_fld_date", "Filed"),
+        prep_df(ntfld, "earliest_ntfld_date", "Not Filed"),
+        prep_df(disp, "earliest_disp_date", "Disposed"),
+    ]
+
+    df = pd.concat(dfs, ignore_index=True)
+    df["Case Status"] = pd.Categorical(
+        df["Case Status"],
+        categories=["Received", "Filed", "Not Filed", "Disposed"],
+        ordered=True,
+    )
+    df["Year"] = [f"{current_year} YTD" if year == current_year else str(year) for year in df["Year"]]
+
+    return df
+
+
+# --- Heatmaps ---
+
+_HEATMAP_MONTH_ORDER = [
+    "Jan", "Feb", "Mar", "Apr", "May",
+    "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+]
+
+_HEATMAP_CHARTS = [
+    {
+        "label":         "Cases Received",
+        "date_col":      "ref_date",
+        "color_scheme":  "blues",
+        "tooltip_title": "Avg. received/day",
+    },
+    {
+        "label":         "Cases Filed",
+        "date_col":      "earliest_fld_date",
+        "color_scheme":  "greens",
+        "tooltip_title": "Avg. filed/day",
+    },
+    {
+        "label":         "Cases Not Filed",
+        "date_col":      "earliest_ntfld_date",
+        "color_scheme":  "oranges",
+        "tooltip_title": "Avg. not filed/day",
+    },
+    {
+        "label":         "Cases Disposed",
+        "date_col":      "earliest_disp_date",
+        "color_scheme":  "purples",
+        "tooltip_title": "Avg. disposed/day",
+    },
+]
+
+
+def _heatmap_prepare(df: pd.DataFrame, date_col: str) -> pd.DataFrame:
+    """Average cases per (month, day-of-month) cell across all years."""
+    out = df[["pbk_num", date_col]].copy()
+    out[date_col] = pd.to_datetime(out[date_col], errors="coerce")
+    out = out.dropna(subset=[date_col])
+    out = out.drop_duplicates(subset=["pbk_num"])
+
+    out["year"]       = out[date_col].dt.year
+    out["month_num"]  = out[date_col].dt.month
+    out["month_abbr"] = out[date_col].dt.strftime("%b")
+    out["day"]        = out[date_col].dt.day
+
+    daily_counts = (
+        out.groupby(["year", "month_num", "month_abbr", "day"])["pbk_num"]
+        .nunique()
+        .reset_index(name="count")
+    )
+    averaged = (
+        daily_counts.groupby(["month_num", "month_abbr", "day"])["count"]
+        .mean()
+        .reset_index(name="avg_cases")
+    )
+    averaged["avg_cases"] = averaged["avg_cases"].round(2)
+    averaged = averaged.loc[averaged["avg_cases"] > 0].copy()
+
+    return averaged
+
+
+def _heatmap_build_chart(
+    averaged: pd.DataFrame,
+    label: str,
+    color_scheme: str,
+    tooltip_title: str,
+) -> alt.Chart | None:
+    if averaged.empty:
+        return None
+
+    return (
+        alt.Chart(averaged)
+        .mark_rect(stroke="white", strokeWidth=0.8)
+        .encode(
+            x=alt.X(
+                "day:O",
+                title="Day of Month",
+                axis=alt.Axis(labelAngle=0, labelFontSize=10, ticks=False, domain=False),
+            ),
+            y=alt.Y(
+                "month_abbr:O",
+                sort=_HEATMAP_MONTH_ORDER,
+                title=None,
+                axis=alt.Axis(labelFontSize=11, ticks=False, domain=False),
+            ),
+            color=alt.Color(
+                "avg_cases:Q",
+                title=tooltip_title,
+                scale=alt.Scale(scheme=color_scheme),
+                legend=alt.Legend(orient="right", titleFontSize=10, labelFontSize=9, gradientLength=100),
+            ),
+            tooltip=[
+                alt.Tooltip("month_abbr:O", title="Month"),
+                alt.Tooltip("day:O",        title="Day"),
+                alt.Tooltip("avg_cases:Q",  title=tooltip_title, format=".2f"),
+            ],
+        )
+        .properties(
+            width="container",
+            height=220,
+            title=alt.TitleParams(
+                text=label,
+                subtitle="Average cases per calendar day, across all years in selected date range",
+                fontSize=14,
+                subtitleFontSize=11,
+                subtitleColor="#777",
+                anchor="start",
+            ),
+        )
+        .configure_view(strokeWidth=0)
+        .configure_axis(domain=False)
+    )
+
+
+def render_heatmaps(
+    rcvd: pd.DataFrame,
+    fld: pd.DataFrame,
+    ntfld: pd.DataFrame,
+    disp: pd.DataFrame,
+) -> None:
+    """Render four stacked calendar heatmaps (received, filed, not filed, disposed)."""
+    dataframes = {
+        "Cases Received":  (rcvd,  "ref_date"),
+        "Cases Filed":     (fld,   "earliest_fld_date"),
+        "Cases Not Filed": (ntfld, "earliest_ntfld_date"),
+        "Cases Disposed":  (disp,  "earliest_disp_date"),
+    }
+
+    for cfg in _HEATMAP_CHARTS:
+        label        = cfg["label"]
+        df, date_col = dataframes[label]
+
+        averaged = _heatmap_prepare(df, date_col)
+        chart    = _heatmap_build_chart(averaged, label, cfg["color_scheme"], cfg["tooltip_title"])
+
+        if chart is None:
+            st.info(f"No data available for **{label}** with the current filters.")
+        else:
+            st.altair_chart(chart, use_container_width=True)
+
+        st.divider()
+
+
+# --- Treemap ---
+
+def _treemap_prepare(
+    rcvd: pd.DataFrame,
+    outer: str,
+    inner: str,
+) -> tuple[list, list, list, list]:
+    """Build parallel lists for a two-level Plotly treemap."""
+    import plotly.graph_objects as go
+
+    df = rcvd[["pbk_num", outer, inner]].copy()
+    df[outer] = df[outer].fillna("Unknown")
+    df[inner] = df[inner].fillna("Unknown")
+
+    outer_counts = df.groupby(outer)["pbk_num"].nunique().reset_index(name="count")
+    inner_counts = df.groupby([outer, inner])["pbk_num"].nunique().reset_index(name="count")
+    total = int(df["pbk_num"].nunique())
+
+    ids     = ["__root__"]
+    labels  = ["All Cases"]
+    parents = [""]
+    values  = [total]
+
+    for _, row in outer_counts.iterrows():
+        ids.append(str(row[outer]))
+        labels.append(str(row[outer]))
+        parents.append("__root__")
+        values.append(int(row["count"]))
+
+    for _, row in inner_counts.iterrows():
+        ids.append(f"{row[outer]}||{row[inner]}")
+        labels.append(str(row[inner]))
+        parents.append(str(row[outer]))
+        values.append(int(row["count"]))
+
+    return ids, labels, parents, values
+
+
+def _treemap_build(
+    rcvd: pd.DataFrame,
+    outer: str,
+    inner: str,
+    outer_label: str,
+    inner_label: str,
+    color_scheme: str,
+):
+    import plotly.graph_objects as go
+
+    ids, labels, parents, values = _treemap_prepare(rcvd, outer, inner)
+
+    fig = go.Figure(go.Treemap(
+        ids=ids,
+        labels=labels,
+        parents=parents,
+        values=values,
+        root_color="lightgrey",
+        maxdepth=2,
+        branchvalues="total",
+        textinfo="label+value+percent parent",
+        textfont=dict(size=13),
+        marker=dict(
+            colorscale=color_scheme,
+            showscale=True,
+            colorbar=dict(thickness=14, tickfont=dict(size=10), title=dict(text="Cases", font=dict(size=11))),
+        ),
+        hovertemplate="<b>%{label}</b><br>Cases: %{value:,}<br>% of group: %{percentParent:.1%}<extra></extra>",
+    ))
+
+    fig.update_layout(
+        margin=dict(l=10, r=10, t=40, b=10),
+        height=520,
+        title=dict(text=f"Case Volume by {outer_label} → {inner_label}", font=dict(size=14), x=0),
+        paper_bgcolor="rgba(0,0,0,0)",
+    )
+
+    return fig
+
+
+def render_treemap(rcvd: pd.DataFrame) -> None:
+    """Render an interactive two-level treemap of case volume by agency and charge category."""
+    if rcvd.empty:
+        st.info("No data available for the current filters.")
+        return
+
+    mode = st.radio(
+        "Group by",
+        options=["Agency → Charge Category", "Charge Category → Agency"],
+        horizontal=True,
+        label_visibility="collapsed",
+    )
+
+    if mode == "Agency → Charge Category":
+        fig = _treemap_build(rcvd, "agency_name", "rcvd_lead_category", "Agency", "Charge Category", "Blues")
+    else:
+        fig = _treemap_build(rcvd, "rcvd_lead_category", "agency_name", "Charge Category", "Agency", "Purples")
+
+    st.plotly_chart(fig, use_container_width=True)
+    st.caption("Click any outer tile to drill down into its breakdown. Click the center label to zoom back out.")
+
+
+# --- Age Distribution ---
+
+_AGE_GROUPS   = ["Juvenile (< 18)", "Young Adult (18–24)", "Adult (25+)"]
+_GROUP_COLORS = ["#e15759", "#f28e2b", "#4e79a7"]
+
+
+def _age_groups_prepare(rcvd: pd.DataFrame) -> pd.DataFrame:
+    df = rcvd[["pbk_num", "period", "ref_date", "def_dob"]].copy()
+
+    df["ref_date"] = pd.to_datetime(df["ref_date"], errors="coerce")
+    df["def_dob"]  = pd.to_datetime(df["def_dob"],  errors="coerce")
+    df = df.dropna(subset=["ref_date", "def_dob"])
+    df = df.drop_duplicates(subset=["pbk_num"])
+
+    df["age"] = ((df["ref_date"] - df["def_dob"]).dt.days / 365.25).astype(int)
+    df = df.loc[df["age"].between(0, 100)].copy()
+
+    df["age_group"] = np.select(
+        condlist=[df["age"] < 18, df["age"].between(18, 24), df["age"] >= 25],
+        choicelist=_AGE_GROUPS,
+        default=_AGE_GROUPS[2],
+    )
+
+    total_per_period = df.groupby("period")["pbk_num"].nunique().rename("period_total")
+
+    chart_df = (
+        df.groupby(["period", "age_group"])["pbk_num"]
+        .nunique()
+        .reset_index(name="count")
+        .assign(period=lambda d: d["period"].astype(str))
+    )
+
+    chart_df = chart_df.merge(
+        total_per_period.reset_index().assign(period=lambda d: d["period"].astype(str)),
+        on="period",
+    )
+    chart_df["pct"] = (chart_df["count"] / chart_df["period_total"]).round(3)
+
+    return chart_df
+
+
+def render_age_groups(rcvd: pd.DataFrame) -> None:
+    """Render a stacked bar chart of defendant age groups by period."""
+    chart_df = _age_groups_prepare(rcvd)
+
+    if chart_df.empty:
+        st.info("No valid age data available for the current filters.")
+        return
+
+    view = st.segmented_control(
+        key="age_group_segmented_control",
+        label=None,
+        options=["Count", "Normalized (%)"],
+        default="Count",
+        selection_mode="single",
+    )
+
+    is_normalized = view == "Normalized (%)"
+
+    chart = (
+        alt.Chart(chart_df)
+        .mark_bar()
+        .encode(
+            x=alt.X("period:O", title="Period", sort=None),
+            y=alt.Y(
+                "count:Q",
+                title="Share of Cases Received" if is_normalized else "Cases Received",
+                stack="normalize" if is_normalized else "zero",
+                axis=alt.Axis(format=".0%") if is_normalized else alt.Axis(),
+            ),
+            color=alt.Color(
+                "age_group:N",
+                title="Age Group",
+                scale=alt.Scale(domain=_AGE_GROUPS, range=_GROUP_COLORS),
+                sort=_AGE_GROUPS,
+            ),
+            order=alt.Order("color_age_group_sort_index:Q"),
+            tooltip=[
+                alt.Tooltip("period:O",       title="Period"),
+                alt.Tooltip("age_group:N",    title="Age Group"),
+                alt.Tooltip("count:Q",        title="Cases"),
+                alt.Tooltip("period_total:Q", title="Total Cases in Period"),
+                alt.Tooltip("pct:Q",          title="% of Period", format=".1%"),
+            ],
+        )
+        .properties(
+            title="Defendant Age Group by Period" + (" (Normalized)" if is_normalized else ""),
+            width="container",
+        )
+    )
+
+    st.header("Defendant Age at Time of Referral")
+    st.caption("Breakdown of cases by defendant age group at the time of referral to the prosecuting attorney's office.")
+    st.altair_chart(chart, use_container_width=True)
+
+
+def _age_histogram_prepare(rcvd: pd.DataFrame) -> pd.DataFrame:
+    """Compute defendant age at time of referral."""
+    df = rcvd[["pbk_num", "ref_date", "def_dob"]].copy()
+
+    df["ref_date"] = pd.to_datetime(df["ref_date"], errors="coerce")
+    df["def_dob"]  = pd.to_datetime(df["def_dob"],  errors="coerce")
+    df = df.dropna(subset=["ref_date", "def_dob"])
+
+    df["age"] = ((df["ref_date"] - df["def_dob"]).dt.days / 365.25).astype(int)
+    df = df.loc[df["age"].between(10, 100)].copy()
+    df = df.drop_duplicates(subset=["pbk_num"])
+
+    return df[["pbk_num", "age"]]
+
+
+def _age_histogram_build_chart(df: pd.DataFrame, bin_size: int) -> alt.Chart:
+    total      = len(df)
+    mean_age   = df["age"].mean()
+    median_age = df["age"].median()
+
+    bars = (
+        alt.Chart(df)
+        .mark_bar(color="#4e79a7", opacity=0.85)
+        .encode(
+            x=alt.X("age:Q", bin=alt.Bin(step=bin_size), title="Age at Referral", axis=alt.Axis(labelAngle=0)),
+            y=alt.Y("count():Q", title="Number of Cases"),
+            tooltip=[
+                alt.Tooltip("age:Q",     title="Age (bin start)", bin=alt.Bin(step=bin_size)),
+                alt.Tooltip("count():Q", title="Cases"),
+            ],
+        )
+    )
+
+    mean_rule = (
+        alt.Chart(pd.DataFrame({"age": [mean_age]}))
+        .mark_rule(color="#e15759", strokeWidth=2, strokeDash=[4, 3])
+        .encode(x="age:Q", tooltip=[alt.Tooltip("age:Q", title="Mean age", format=".1f")])
+    )
+
+    median_rule = (
+        alt.Chart(pd.DataFrame({"age": [median_age]}))
+        .mark_rule(color="#f28e2b", strokeWidth=2, strokeDash=[4, 3])
+        .encode(x="age:Q", tooltip=[alt.Tooltip("age:Q", title="Median age", format=".1f")])
+    )
+
+    legend_df = pd.DataFrame({
+        "age":   [mean_age, median_age],
+        "label": [f"Mean: {mean_age:.1f}", f"Median: {median_age:.1f}"],
+        "color": ["#e15759", "#f28e2b"],
+    })
+    legend_text = (
+        alt.Chart(legend_df)
+        .mark_text(align="left", fontSize=11, fontWeight="bold", dx=4)
+        .encode(
+            x=alt.X("age:Q"),
+            y=alt.value(12),
+            text="label:N",
+            color=alt.Color("color:N", scale=None),
+        )
+    )
+
+    return (
+        (bars + mean_rule + median_rule + legend_text)
+        .properties(
+            width="container",
+            height=340,
+            title=alt.TitleParams(
+                text="Defendant Age at Time of Referral",
+                subtitle=f"n = {total:,} cases · ages 10–100 · bin width = {bin_size} yr",
+                fontSize=14,
+                subtitleFontSize=11,
+                subtitleColor="#777",
+                anchor="start",
+            ),
+        )
+        .configure_view(strokeWidth=0)
+        .configure_axis(domain=False, grid=False)
+    )
+
+
+def render_age_histogram(rcvd: pd.DataFrame) -> None:
+    """Render a histogram of defendant age at time of case referral."""
+    df = _age_histogram_prepare(rcvd)
+
+    if df.empty:
+        st.info("No valid age data available for the current filters.")
+        return
+
+    bin_size = st.select_slider(
+        "Bin width (years)",
+        options=[1, 2, 5, 10],
+        value=5,
+        help="Adjust the width of each age bracket.",
+    )
+
+    chart = _age_histogram_build_chart(df, bin_size)
+
+    st.header("Suspect Age Histogram")
+    st.caption("Interactive histogram of suspect age at time of case referral.")
+    st.altair_chart(chart, use_container_width=True)
+
+
+# --- Recidivism ---
+
+def _compute_first_seen(rcvd_full: pd.DataFrame) -> pd.DataFrame:
+    """
+    Using the full unfiltered dataset, compute each defendant's first-ever
+    referral date. Returns df with columns: pbk_def_num, first_ref_date.
+    """
+    df = rcvd_full.copy()
+    df["ref_date"] = pd.to_datetime(df["ref_date"], errors="coerce")
+    df = df.loc[df["pbk_def_num"].notna() & (df["pbk_def_num"].astype(str).str.strip() != "")]
+    df = df.sort_values(["ref_date", "pbk_num"], ascending=[True, True])
+
+    first_seen = (
+        df.drop_duplicates(subset=["pbk_def_num"], keep="first")[["pbk_def_num", "ref_date"]]
+        .rename(columns={"ref_date": "first_ref_date"})
+    )
+    return first_seen
+
+
+def _recidivism_prepare(rcvd: pd.DataFrame, rcvd_full: pd.DataFrame) -> pd.DataFrame:
+    """Merge first-seen dates onto the filtered dataset and flag new vs prior referrals."""
+    df = rcvd.copy()
+    df["ref_date"] = pd.to_datetime(df["ref_date"], errors="coerce")
+    df = df.loc[df["pbk_def_num"].notna() & (df["pbk_def_num"].astype(str).str.strip() != "")]
+    df = df.sort_values(["ref_date", "pbk_num"], ascending=[True, True])
+
+    first_seen = _compute_first_seen(rcvd_full)
+    df = df.merge(first_seen, on="pbk_def_num", how="left")
+
+    df["referral_type"] = np.where(
+        df["ref_date"] == df["first_ref_date"],
+        "New Defendant",
+        "Prior Referral",
+    )
+    return df
+
+
+def _build_referral_type_chart(df: pd.DataFrame, is_normalized: bool) -> alt.Chart:
+    type_order  = ["New Defendant", "Prior Referral"]
+    type_colors = ["#4da6ff", "#e05c5c"]
+
+    total_per_period = df.groupby("period")["pbk_num"].nunique().rename("period_total")
+
+    chart_df = (
+        df.groupby(["period", "referral_type"])["pbk_num"]
+        .nunique()
+        .reset_index(name="count")
+        .assign(period=lambda d: d["period"].astype(str))
+    )
+    chart_df = chart_df.merge(
+        total_per_period.reset_index().assign(period=lambda d: d["period"].astype(str)),
+        on="period",
+    )
+    chart_df["pct"] = (chart_df["count"] / chart_df["period_total"]).round(3)
+
+    return (
+        alt.Chart(chart_df)
+        .mark_bar()
+        .encode(
+            x=alt.X("period:O", title="Period", sort=None),
+            y=alt.Y(
+                "count:Q",
+                title="Share of Cases" if is_normalized else "Cases Referred",
+                stack="normalize" if is_normalized else "zero",
+                axis=alt.Axis(format=".0%") if is_normalized else alt.Axis(),
+            ),
+            color=alt.Color(
+                "referral_type:N",
+                title="Defendant Type",
+                scale=alt.Scale(domain=type_order, range=type_colors),
+                sort=type_order,
+            ),
+            order=alt.Order("color_referral_type_sort_index:Q"),
+            tooltip=[
+                alt.Tooltip("period:O",         title="Period"),
+                alt.Tooltip("referral_type:N",  title="Defendant Type"),
+                alt.Tooltip("count:Q",          title="Cases"),
+                alt.Tooltip("period_total:Q",   title="Total Cases in Period"),
+                alt.Tooltip("pct:Q",            title="% of Period", format=".1%"),
+            ],
+        )
+        .properties(
+            title="New vs. Previously Referred Defendants by Period"
+                  + (" (Normalized)" if is_normalized else ""),
+            width="container",
+        )
+    )
+
+
+def _build_recurrence_chart(rcvd_full: pd.DataFrame) -> alt.Chart:
+    """How many defendants appeared exactly once, twice, three times, etc.?"""
+    df = rcvd_full.copy()
+    df["ref_date"] = pd.to_datetime(df["ref_date"], errors="coerce")
+    df = df.loc[df["pbk_def_num"].notna() & (df["pbk_def_num"].astype(str).str.strip() != "")]
+    df = df.drop_duplicates(subset=["pbk_num"])
+
+    referral_counts = (
+        df.groupby("pbk_def_num")["pbk_num"]
+        .nunique()
+        .reset_index(name="n_referrals")
+    )
+    referral_counts["n_referrals_label"] = referral_counts["n_referrals"].apply(
+        lambda x: "6+" if x >= 6 else str(x)
+    )
+
+    label_order = ["1", "2", "3", "4", "5", "6+"]
+    dist = (
+        referral_counts.groupby("n_referrals_label")["pbk_def_num"]
+        .nunique()
+        .reindex(label_order, fill_value=0)
+        .reset_index(name="n_defendants")
+    )
+
+    total_defs = dist["n_defendants"].sum()
+    dist["pct"]              = (dist["n_defendants"] / total_defs).round(3)
+    dist["pct_label"]        = (dist["pct"] * 100).round(1).astype(str) + "%"
+    dist["n_defendants_fmt"] = dist["n_defendants"].apply(lambda x: f"{x:,}")
+
+    return (
+        alt.Chart(dist)
+        .mark_bar(color="#4da6ff", opacity=0.85, cornerRadius=3)
+        .encode(
+            x=alt.X("n_referrals_label:O", sort=label_order, title="Number of Referrals", axis=alt.Axis(labelAngle=0)),
+            y=alt.Y("n_defendants:Q", title="Number of Defendants"),
+            tooltip=[
+                alt.Tooltip("n_referrals_label:O", title="Referrals"),
+                alt.Tooltip("n_defendants_fmt:N",  title="Defendants"),
+                alt.Tooltip("pct_label:N",         title="% of All Defendants"),
+            ],
+        )
+        .properties(
+            title=alt.TitleParams(
+                text="Referral Frequency Distribution",
+                subtitle="How many times has each defendant been referred? (full dataset)",
+                fontSize=14,
+                subtitleFontSize=11,
+                subtitleColor="#777",
+                anchor="start",
+            ),
+            width="container",
+            height=300,
+        )
+        .configure_view(strokeWidth=0)
+        .configure_axis(domain=False, grid=False)
+    )
+
+
+def _build_time_between_chart(rcvd_full: pd.DataFrame) -> alt.Chart:
+    """Median/mean days between first and second referral, by year of second referral."""
+    df = rcvd_full.copy()
+    df["ref_date"] = pd.to_datetime(df["ref_date"], errors="coerce")
+    df = df.loc[df["pbk_def_num"].notna() & (df["pbk_def_num"].astype(str).str.strip() != "")]
+    df = df.drop_duplicates(subset=["pbk_num"])
+    df = df.sort_values(["pbk_def_num", "ref_date", "pbk_num"])
+
+    df["referral_rank"] = df.groupby("pbk_def_num").cumcount() + 1
+
+    first  = df.loc[df["referral_rank"] == 1, ["pbk_def_num", "ref_date"]].rename(columns={"ref_date": "date_1"})
+    second = df.loc[df["referral_rank"] == 2, ["pbk_def_num", "ref_date"]].rename(columns={"ref_date": "date_2"})
+
+    gap_df = first.merge(second, on="pbk_def_num")
+    gap_df["days_between"] = (gap_df["date_2"] - gap_df["date_1"]).dt.days
+    gap_df["year"]         = gap_df["date_2"].dt.year
+
+    agg = (
+        gap_df.groupby("year")["days_between"]
+        .agg(median_days="median", mean_days="mean", n="count")
+        .reset_index()
+    )
+    agg["median_days"] = agg["median_days"].round(0).astype(int)
+    agg["mean_days"]   = agg["mean_days"].round(0).astype(int)
+    agg["year"]        = agg["year"].astype(str)
+
+    melted = agg.melt(
+        id_vars=["year", "n"],
+        value_vars=["median_days", "mean_days"],
+        var_name="statistic",
+        value_name="days",
+    )
+    melted["statistic"] = melted["statistic"].map({"median_days": "Median", "mean_days": "Mean"})
+
+    return (
+        alt.Chart(melted)
+        .mark_line(point=True)
+        .encode(
+            x=alt.X("year:O", title="Year of Second Referral", axis=alt.Axis(labelAngle=0)),
+            y=alt.Y("days:Q", title="Days Between 1st and 2nd Referral"),
+            color=alt.Color(
+                "statistic:N",
+                title=None,
+                scale=alt.Scale(domain=["Median", "Mean"], range=["#4da6ff", "#f28e2b"]),
+            ),
+            strokeDash=alt.StrokeDash(
+                "statistic:N",
+                scale=alt.Scale(domain=["Median", "Mean"], range=[[1, 0], [4, 2]]),
+            ),
+            tooltip=[
+                alt.Tooltip("year:O",      title="Year"),
+                alt.Tooltip("statistic:N", title="Statistic"),
+                alt.Tooltip("days:Q",      title="Days"),
+                alt.Tooltip("n:Q",         title="Defendants"),
+            ],
+        )
+        .properties(
+            title=alt.TitleParams(
+                text="Time Between First and Second Referral",
+                subtitle="Median and mean days, by year of second referral (full dataset)",
+                fontSize=14,
+                subtitleFontSize=11,
+                subtitleColor="#777",
+                anchor="start",
+            ),
+            width="container",
+            height=300,
+        )
+        .configure_view(strokeWidth=0)
+        .configure_axis(domain=False, grid=False)
+    )
+
+
+def render_recidivism(
+    rcvd: pd.DataFrame,
+    rcvd_full: pd.DataFrame = RCVD,
+) -> None:
+    """
+    Render recidivism / re-referral metrics section.
+
+    rcvd      — responds to sidebar filters (date range, agency, charge cat, etc.)
+    rcvd_full — the raw unfiltered table, used for first-seen date computation
+                and full-history charts (recurrence dist, time between referrals)
+    """
+    df = _recidivism_prepare(rcvd, rcvd_full)
+
+    if df.empty:
+        st.info("No valid defendant data available for the current filters.")
+        return
+
+    st.header("Re-Referral Activity")
+    st.caption(
+        "Tracks defendants referred to this office more than once. "
+        "'Prior Referral' indicates the defendant had at least one case "
+        "referred before the current period — based on full case history "
+        "dating back to 2016."
+    )
+
+    view = st.segmented_control(
+        label=None,
+        options=["Count", "Normalized (%)"],
+        default="Count",
+        selection_mode="single",
+    )
+    is_normalized = view == "Normalized (%)"
+    st.altair_chart(_build_referral_type_chart(df, is_normalized), use_container_width=True)
+
+    st.divider()
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.altair_chart(_build_recurrence_chart(rcvd_full), use_container_width=True)
+    with col2:
+        st.altair_chart(_build_time_between_chart(rcvd_full), use_container_width=True)

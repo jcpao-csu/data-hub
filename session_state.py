@@ -18,18 +18,14 @@ from pathlib import Path
 from datetime import date
 import pandas as pd
 
-# ---------------------------------------------------------------------------
 # Data loading
-# ---------------------------------------------------------------------------
 # Imported here so session_state.py is the single source of truth for raw data.
 # Pages should never import from read_data.py directly — always use
 # get_filtered_data() below.
-# from read_data import load_rcvd, load_fld, load_ntfld, load_disp
+
 from read_data import RCVD, FLD, NTFLD, DISP, AGENCIES, MSHP_CODES
 
-# ---------------------------------------------------------------------------
 # Constants
-# ---------------------------------------------------------------------------
 
 _DATA_START = date(2016, 1, 1)
 
@@ -88,51 +84,13 @@ _SEX_OPTIONS: dict[str, str] = {
     "U": "Unknown",
 }
 
-# ---------------------------------------------------------------------------
 # Codebook
-# ---------------------------------------------------------------------------
-
-# @st.cache_data(ttl=None, show_spinner=False)
-# def _load_codebook(file_path: str = "assets/data/MSHP_2025_11_14.csv") -> pd.DataFrame:
-#     """Load and cache the MSHP charge code codebook. Never needs to expire."""
-#     col_order = [
-#         "Charge Code",
-#         "Statute",
-#         "Severity",
-#         "Classification",
-#         "Offense Description (abridged)",
-#         "NCIC Category Code",
-#         "NCIC Category",
-#         "JCPAO Category Code",
-#         "JCPAO Category",
-#         "Legacy Code",
-#     ]
-#     df = pd.read_csv(
-#         Path(file_path),
-#         header=0,
-#         names=[
-#             "Charge Code", "Severity", "Classification",
-#             "Offense Description (abridged)", "MSHP Code", "NCIC Category Code",
-#             "Statute", "Offense Description (unabridged)", "OSCA Category",
-#             "Severity-Class Rank", "NCIC Category", "Legacy Code",
-#             "JCPAO Category", "JCPAO Category Code", "DV",
-#             "Harrassment", "Stalking", "Already exists?",
-#         ],
-#         usecols=col_order,
-#         encoding="utf-8",
-#     )
-#     return df[col_order]
-
-
-# CODEBOOK = _load_codebook()
 
 _CHARGE_CATEGORIES: list[str] = ["All"] + sorted(
     MSHP_CODES["jcpao_category"].dropna().unique().tolist()
 )
 
-# ---------------------------------------------------------------------------
 # Default filter values
-# ---------------------------------------------------------------------------
 
 def _default_date_range() -> tuple[date, date]:
     today = date.today()
@@ -148,9 +106,7 @@ _FILTER_DEFAULTS: dict = {
     "def_sex_filter": "All",
 }
 
-# ---------------------------------------------------------------------------
 # Session state initialization
-# ---------------------------------------------------------------------------
 
 def initialize_session_state() -> None:
     """
@@ -162,9 +118,7 @@ def initialize_session_state() -> None:
         if key not in st.session_state:
             st.session_state[key] = default() if callable(default) else default
 
-# ---------------------------------------------------------------------------
 # Filtering logic
-# ---------------------------------------------------------------------------
 
 def _apply_date_filter(df: pd.DataFrame, date_col: str) -> pd.DataFrame:
     """Filter a dataframe to the selected date range using the given date column."""
@@ -250,18 +204,14 @@ def get_filtered_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Da
 
     return tuple(results)  # (rcvd, fld, ntfld, disp)
 
-# ---------------------------------------------------------------------------
 # Reset
-# ---------------------------------------------------------------------------
 
 def reset_filters() -> None:
     """Reset all filter session state keys to their defaults. Use as on_click callback."""
     for key, default in _FILTER_DEFAULTS.items():
         st.session_state[key] = default() if callable(default) else default
 
-# ---------------------------------------------------------------------------
 # Sidebar widget rendering
-# ---------------------------------------------------------------------------
 
 def render_sidebar(
     date_range_disabled: bool = False, 

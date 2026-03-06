@@ -3,7 +3,22 @@ import pandas as pd
 from pathlib import Path
 import altair as alt
 
-from read_data import RCVD, FLD, NTFLD, DISP
+from session_state import get_filtered_data, render_sidebar
+
+# --- Load filtered data ---
+
+rcvd, fld, ntfld, disp = get_filtered_data()
+rcvd  = rcvd[rcvd['dv'] == True]
+fld   = fld[fld['dv'] == True]
+ntfld = ntfld[ntfld['dv'] == True]
+disp  = disp[disp['dv'] == True]
+
+# --- Sidebar ---
+
+with st.sidebar:
+    st.write("**Domestic Assault Cases**")
+    st.divider()
+    render_sidebar()
 
 # --- Streamlit page title ---
 
@@ -94,16 +109,16 @@ with ytd_dv_metrics:
     rcvd_dv_ytd, fld_dv_ytd, ntfld_dv_ytd, disp_dv_ytd = st.columns(4)
 
     with rcvd_dv_ytd:
-        dv_ytd(RCVD, "ref_date", "***Total Received (YTD)***", "area")
-    
+        dv_ytd(rcvd, "ref_date", "***Total Received (YTD)***", "area")
+
     with fld_dv_ytd:
-        dv_ytd(FLD, "earliest_fld_date", "***Total Filed (YTD)***", "area")
+        dv_ytd(fld, "earliest_fld_date", "***Total Filed (YTD)***", "area")
 
     with ntfld_dv_ytd:
-        dv_ytd(NTFLD, "earliest_ntfld_date", "***Total Not Filed (YTD)***", "area", "inverse")
-    
+        dv_ytd(ntfld, "earliest_ntfld_date", "***Total Not Filed (YTD)***", "area", "inverse")
+
     with disp_dv_ytd:
-        dv_ytd(DISP, "earliest_disp_date", "***Total Disposed (YTD)***", "area")
+        dv_ytd(disp, "earliest_disp_date", "***Total Disposed (YTD)***", "area")
     
 
 def filter_dv(df: pd.DataFrame):
@@ -209,7 +224,7 @@ def dv_timeseries(df: pd.DataFrame, date_col: str, title_name: str, ):
 
 # Not Filed Reasons
 
-def ntfld_reasons(ntfld: pd.DataFrame = NTFLD, date_col: str = "earliest_ntfld_date"):
+def ntfld_reasons(ntfld: pd.DataFrame = None, date_col: str = "earliest_ntfld_date"):
 
     # Filter DV for only those with DV assaults
     ntfld = ntfld[ntfld['dv']]
@@ -278,7 +293,7 @@ def ntfld_reasons(ntfld: pd.DataFrame = NTFLD, date_col: str = "earliest_ntfld_d
 
 # Disposed Outcomes 
 
-def disp_outcomes(disp: pd.DataFrame = DISP, date_col: str = "earliest_disp_date"):
+def disp_outcomes(disp: pd.DataFrame = None, date_col: str = "earliest_disp_date"):
 
     # disp_dict
     disp_dict = {
@@ -359,7 +374,7 @@ def disp_outcomes(disp: pd.DataFrame = DISP, date_col: str = "earliest_disp_date
 
 # File (%) Rate
 
-def file_rate(rcvd: pd.DataFrame = RCVD, fld: pd.DataFrame = FLD, ntfld: pd.DataFrame = NTFLD, disp: pd.DataFrame = DISP, date_col: str = "ref_date"):
+def file_rate(rcvd: pd.DataFrame = None, fld: pd.DataFrame = None, ntfld: pd.DataFrame = None, disp: pd.DataFrame = None, date_col: str = "ref_date"):
 
     # Filter DV for only those with DV assaults
     rcvd = rcvd.loc[rcvd['dv'], ["pbk_num", "ref_date"]]
@@ -443,7 +458,7 @@ def file_rate(rcvd: pd.DataFrame = RCVD, fld: pd.DataFrame = FLD, ntfld: pd.Data
     st.altair_chart(pie_chart, use_container_width=True)
 
 # File Lead Charges 
-def file_lead_charges(fld: pd.DataFrame = FLD, date_col: str = "earliest_fld_date"):
+def file_lead_charges(fld: pd.DataFrame = None, date_col: str = "earliest_fld_date"):
 
     # Filter DV for only those with DV assaults
     fld = fld[fld['dv']]
@@ -511,28 +526,28 @@ with cols[0]:
     tabs = st.tabs(["Received Cases Status", "Filed Lead Charges", "Not Filed Reasons", "Disposed Outcomes"])
     with tabs[0]:
         st.subheader("Received Cases Status")
-        file_rate()
+        file_rate(rcvd, fld, ntfld, disp)
     with tabs[1]:
         st.subheader("Filed Cases' Lead Charge Codes")
-        file_lead_charges()
+        file_lead_charges(fld)
     with tabs[2]:
         st.subheader("Not Filed Case Reasons")
-        ntfld_reasons()
+        ntfld_reasons(ntfld)
     with tabs[3]:
         st.subheader("Disposed Case Outcomes")
-        disp_outcomes()
+        disp_outcomes(disp)
 
 with cols[1]:
-    st.subheader("Domestic Assault Cases Rolling Total") # Cumulative Time Series
+    st.subheader("Domestic Assault Cases Rolling Total")
     tabs = st.tabs(["Received", "Filed", "Not Filed", "Disposed"])
     with tabs[0]:
-        dv_timeseries(RCVD, "ref_date", "Received")
+        dv_timeseries(rcvd, "ref_date", "Received")
     with tabs[1]:
-        dv_timeseries(FLD, "earliest_fld_date", "Filed")
+        dv_timeseries(fld, "earliest_fld_date", "Filed")
     with tabs[2]:
-        dv_timeseries(NTFLD, "earliest_ntfld_date", "Not Filed")
+        dv_timeseries(ntfld, "earliest_ntfld_date", "Not Filed")
     with tabs[3]:
-        dv_timeseries(DISP, "earliest_disp_date", "Disposed")
+        dv_timeseries(disp, "earliest_disp_date", "Disposed")
 
 
 # IPVI-tagged cases / IPVI property crimes / Harassment / Stalking / Homicides

@@ -8,7 +8,7 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from session_state import get_filtered_data
+from session_state import get_filtered_data, render_sidebar
 from dashboard_stats import post_last_updated
 from read_data import RCVD  # only used for "last updated" timestamp
 
@@ -26,6 +26,8 @@ with st.sidebar:
         f"Welcome to the JCPAO Dashboard! Results based on system data as of "
         f"{post_last_updated(RCVD)}."
     )
+    st.divider()
+    render_sidebar()
 
 # ---------------------------------------------------------------------------
 # Load filtered data
