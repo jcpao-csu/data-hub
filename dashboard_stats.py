@@ -2,40 +2,27 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from datetime import datetime 
-
 import altair as alt
 import plotly.graph_objects as go
 
-from read_data import RCVD, MSHP_CODES
+
+from read_data import RCVD, FLD, NTFLD, DISP, MSHP_CODES, AGENCIES
+from session_state import get_filtered_data
+
+# Load filtered data from session_state
+rcvd, fld, ntfld, disp = get_filtered_data()
 
 # --- Get last updated date --- 
-def post_last_updated(
-    rcvd_df: pd.DataFrame
-):
+def post_last_updated(df: pd.DataFrame = rcvd) -> str:
     """
     JCPAO DASHBOARD - Last Updated Date
     * st.sidebar.caption(f"Results based on system data as of {latest_date}.")
-
-    Args:
-        rcvd_df : pd.DataFrame // RCVD data report
-    
-    Returns:
-        latest_date : Most recent 'ref_date' (date of the most recent case received by the JCPAO)
     """
-
     try:
-        df = rcvd_df.copy()
-        df["ref_date"] = pd.to_datetime(df["ref_date"], format="%Y-%m-%d", errors="coerce")
-    except KeyError:
-        latest_date = "N/A"
-    else:
-        latest_date = df["ref_date"].max()
-        latest_date = latest_date.strftime("%A, %B %d, %Y")
-    # finally:
-
-    # Returns latest ref_date by JCPAO
-    return latest_date
-
+        ref_dates = pd.to_datetime(df["ref_date"], format="%Y-%m-%d", errors="coerce")
+        return f' Dashboard based on system data as of {ref_dates.max().strftime("%A, %B %d, %Y")}.'
+    except (KeyError, AttributeError):
+        return None
 
 # --- Define functions for dashboard statistics ---
 
@@ -1239,9 +1226,9 @@ def render_age_histogram(rcvd: pd.DataFrame) -> None:
     st.altair_chart(chart, use_container_width=True)
 
 
-# --- Recidivism ---
+# --- RECIDIVISM ---
 
-def _compute_first_seen(rcvd_full: pd.DataFrame) -> pd.DataFrame:
+def _compute_first_seen(rcvd_full: pd.DataFrame = RCVD) -> pd.DataFrame:
     """
     Using the full unfiltered dataset, compute each defendant's first-ever
     referral date. Returns df with columns: pbk_def_num, first_ref_date.
@@ -1251,6 +1238,11 @@ def _compute_first_seen(rcvd_full: pd.DataFrame) -> pd.DataFrame:
     df = df.loc[df["pbk_def_num"].notna() & (df["pbk_def_num"].astype(str).str.strip() != "")]
     df = df.sort_values(["ref_date", "pbk_num"], ascending=[True, True])
 
+    # TODO - if we want to get fancy, we could also use the pbk_def_num to link to the fld / ntfld datasets and check for any earlier filed/not filed dates that might predate the earliest received date in the rcvd dataset. But for now we'll just assume that the first received date is the true "first seen" date for each defendant.
+    # TODO - also, if we want to be really fancy, we could compute separate "first seen" dates for each defendant in each dataset (rcvd, fld, ntfld) and then merge those together to get a more complete picture of each defendant's history with the prosecuting attorney's office. But again, for now we'll just keep it simple and use the first received date as the "first seen" date for each defendant.
+    # TODO - also, we should probably add some error handling here to catch any cases where the pbk_def_num is not unique or where there are multiple received dates for the same defendant. For now we'll just assume that the data is clean and that each defendant has a unique pbk_def_num and a single received date, but in a real-world application we would want to add some checks to ensure data quality and handle any anomalies appropriately.
+    # TODO - also, we should probably add some logging here to track how many unique defendants we have in the dataset and how many of them have valid received dates, as well as any cases that are dropped due to missing or invalid data. This would help us monitor the data quality and identify any potential issues with the dataset that might affect our analysis of recidivism rates. For now we'll just keep it simple and focus on the core functionality of computing the first seen dates, but in a production application we would want to add some additional logging and monitoring to ensure that our data is accurate and reliable.
+    # TODO - also, we should probably add some documentation here to explain the assumptions we're making about the data and the limitations of our approach to computing recidivism rates based on the received dataset. For example, we might want to note that our analysis is limited to defendants who have a valid pbk_def_num and a valid received date in the rcvd dataset, and that we are not accounting for any defendants who may have been referred to the prosecuting attorney's office but do not have a valid pbk_def_num or received date in the dataset. We might also want to note that our analysis is based on the assumption that the first received date for each defendant represents their true "first seen" date with the prosecuting attorney's office, which may not always be the case if there are data quality issues or if there are defendants with multiple received dates. For now we'll just keep it simple and focus on the core functionality of computing the first seen dates, but in a production application we would want to add some additional documentation to clarify our assumptions and limitations around this analysis.
     first_seen = (
         df.drop_duplicates(subset=["pbk_def_num"], keep="first")[["pbk_def_num", "ref_date"]]
         .rename(columns={"ref_date": "first_ref_date"})
@@ -1460,7 +1452,7 @@ def _build_time_between_chart(rcvd_full: pd.DataFrame) -> alt.Chart:
 
 
 def render_recidivism(
-    rcvd: pd.DataFrame,
+    rcvd: pd.DataFrame = rcvd,
     rcvd_full: pd.DataFrame = RCVD,
 ) -> None:
     """
