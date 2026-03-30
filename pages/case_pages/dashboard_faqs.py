@@ -9,23 +9,24 @@ import pandas as pd
 import numpy as np
 from datetime import date
 
-from session_state import get_filtered_data, MSHP_CODES
+from read_data import get_dataframes
+from session_state import get_filtered_data, render_sidebar, MSHP_CODES
 
-st.write("""# :material/forum: Frequently Asked Questions""") 
+
+
+RCVD, FLD, NTFLD, DISP, MSHP_CODES, AGENCIES = get_dataframes()
+
+with st.sidebar:
+    st.title("Jackson County Prosecuting Attorney's Office")
+    st.write("**Frequently Asked Questions**")
+    render_sidebar()
+
+# Load filtered data (after sidebar — see session_state.py)
+rcvd, fld, ntfld, disp = get_filtered_data()
+
+st.write("""# :material/forum: Frequently Asked Questions""")
 st.caption("Use the dashboard filters and find answers to frequently asked questions about how our Office is prosecuting criminal cases.")
 st.divider()
-
-
-_PERIOD_OPTIONS: dict[str, str] = {
-    "Y": "Annually",
-    "Q": "Quarterly",
-    "M": "Monthly",
-    "W": "Weekly",
-    "D": "Daily",
-}
-
-# Load filtered data (see session_state.py)
-rcvd, fld, ntfld, disp = get_filtered_data()
 
 
 
@@ -48,25 +49,10 @@ rcvd, fld, ntfld, disp = get_filtered_data()
 # f"Total {charge_type} cases referred from {agency} against {race/sex defendants} from {date_range} to {date_range}, broken down {period}"
 # st.caption(f"Total cases received from {date_range[0]} to {date_range[1]}, broken down {_PERIOD_OPTIONS[select_period].tolower()}")
 
-# Build the full period range from the date filter
+# Build the full period range from the date filter (validation already done by get_filtered_data above)
 date_range = st.session_state["date_range_filter"]
 freq = st.session_state["period_freq_filter"]
-
-# Check that date_range filter is tuple len=2 (or else full_index won't render properly)
-if len(date_range)<2:
-    st.warning("Incomplete date range. Please select a start and end date to filter the dashboard.")
-    st.stop()
-
-full_index = pd.period_range(
-    start=date_range[0],
-    end=date_range[1],
-    freq=freq,
-)
-
-# Stop loading tables IF (a) weekly view, longer than 52 weeks; (b) daily view, longer than 366 days
-if (freq=="W" and len(full_index)>52) or (freq=="D" and len(full_index) > 366):
-    st.warning("Period granularity is too fine for this date range. Try switching to weekly or monthly.")
-    st.stop()
+full_index = pd.period_range(start=date_range[0], end=date_range[1], freq=freq)
 
 # Total Cases Received
 def cases_rcvd(rcvd: pd.DataFrame = rcvd):
@@ -446,6 +432,11 @@ def cases_disp(disp: pd.DataFrame = disp):
 
 
 # st.expander 
+
+from stats.ytd_totals import render_ytd_metric
+with st.expander("How many cases has the JCPAO processed year-to-date?", expanded=False, icon=None, width="stretch"):
+    render_ytd_metric(RCVD, FLD, NTFLD, DISP)
+
 with st.expander("How many cases has the Office received?", expanded=False, icon=None, width="stretch"):
     cases_rcvd()
 
@@ -468,14 +459,6 @@ with st.expander("How long does the Office take to review a case?", expanded=Fal
 with st.expander("How many cases has the Office disposed?", expanded=False, icon=None, width="stretch"):
     cases_disp()
 
-from age_histogram import render_age_histogram
-from age_groups import render_age_groups
-with st.expander("How old are suspects when cases are referred to the Office?", expanded=False, icon=None, width="stretch"):
-    tab1, tab2 = st.tabs(["Histogram", "% Juvenile"])
-    with tab1:
-        render_age_histogram()
-    with tab2:
-        render_age_groups()
 
 # Unique defendants referred each period
 
