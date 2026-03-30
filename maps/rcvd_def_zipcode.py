@@ -28,7 +28,7 @@ def _load_geodata() -> tuple[set, gpd.GeoDataFrame, gpd.GeoDataFrame, gpd.GeoDat
     gdf = gpd.read_file(_SHP_PATH).to_crs(epsg=4326)
     jc_zips = set(gdf["ZCTA5CE20"].astype(str))
 
-    counties = gpd.read_file(_COUNTY_SHP_PATH).to_crs(epsg=4326)
+    jc_boundary = gpd.read_file(_COUNTY_SHP_PATH).to_crs(epsg=4326)
     # jc_boundary = counties[
     #     (counties["STATEFP"] == "29") & (counties["COUNTYFP"] == "095")
     # ][["geometry"]].copy()
