@@ -84,9 +84,8 @@ _DETAIL_OPTIONS = {
     "Disposed": [
         "By Referring Agency", 
         "By Disposed Lead Charge Severity-Class", 
-        "By Disposed Lead Charge Category", 
-        "By Conviction Rate", 
-        "By Disposition Outcome", 
+        "By Disposed Lead Charge Category",
+        "By Disposition Outcome",
         "By Guilty Plea", 
         "By Defendant Race", 
         "By Defendant Sex"
@@ -1030,11 +1029,13 @@ def _build_disp_outcome_breakdown_donut(df: pd.DataFrame, title: str = "", subti
 
     arc = base.mark_arc(innerRadius=56, outerRadius=120, stroke="#e8edf2", strokeWidth=1.4, strokeOpacity=1)
 
-    center_df = pd.DataFrame({"total": [f"{total:,}"], "sub": ["cases"]})
+    conviction_count = int(df.loc[df["outcome_cat"] == "Conviction", "count"].sum())
+    conviction_pct = conviction_count / total * 100 if total else 0.0
+    center_df = pd.DataFrame({"top": [f"{conviction_pct:.1f}%"], "sub": ["conviction rate"]})
     center_total = (
         alt.Chart(center_df)
         .mark_text(size=18, fontWeight="bold", color="#e8edf2", dy=-9)
-        .encode(text="total:N", tooltip=alt.value(None))
+        .encode(text="top:N", tooltip=alt.value(None))
     )
     center_sub = (
         alt.Chart(center_df)
@@ -1792,17 +1793,6 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(category_df, "category", "Category", "By Disposed Lead Charge Category", gt_subtitle), width="stretch")
-
-                elif selected_status == "Disposed" and selected_detail == "By Conviction Rate":
-                    outcome_df = _prepare_disp_outcome(disp, selected_period)
-                    gt_subtitle = f"Convicted vs. not convicted outcomes for cases disposed {_in}"
-                    st.altair_chart(
-                        _build_disp_outcome_donut(outcome_df, title="By Conviction Rate",
-                            subtitle=gt_subtitle),
-                        width="stretch", height=350,
-                    )
-                    with st.expander("View data table"):
-                        great_tables(_build_simple_gt(outcome_df, "conv_status", "Outcome", "By Conviction Rate", gt_subtitle), width="stretch")
 
                 elif selected_status == "Disposed" and selected_detail == "By Disposition Outcome":
                     disp_outcome_df = _prepare_disp_outcome_breakdown(disp, selected_period)
