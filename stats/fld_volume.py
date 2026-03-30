@@ -81,9 +81,9 @@ def render_fld_volume(fld: pd.DataFrame) -> None:
         st.header(":material/task_alt: Cases Filed")
         tab_bar, tab_line = st.tabs(["Bar Chart", "Line Chart"])
         with tab_bar:
-            st.altair_chart(_build_fld_volume_bar(df, title="Cases Filed", subtitle=subtitle), use_container_width=True)
+            st.altair_chart(_build_fld_volume_bar(df, title="Cases Filed", subtitle=subtitle), width="container")
         with tab_line:
-            st.altair_chart(_build_fld_volume_line(df), use_container_width=True)
+            st.altair_chart(_build_fld_volume_line(df), width="container")
 
 
 # --- render_file_rate ---
@@ -167,7 +167,7 @@ def render_file_rate(fld: pd.DataFrame, ntfld: pd.DataFrame) -> None:
     df = _prepare_file_rate(fld, ntfld)
     with st.container(border=True):
         st.header(":material/percent: Filing Rate")
-        st.altair_chart(_build_file_rate_line(df), use_container_width=True)
+        st.altair_chart(_build_file_rate_line(df), width="container")
 
 
 # --- render_decision_time ---
@@ -258,4 +258,4 @@ def render_decision_time(fld: pd.DataFrame, ntfld: pd.DataFrame) -> None:
     df = _prepare_decision_time(fld, ntfld)
     with st.container(border=True):
         st.header(":material/timer: Duration of Case Review")
-        st.altair_chart(_build_decision_time_line(df), use_container_width=True)
+        st.altair_chart(_build_decision_time_line(df), width="container")

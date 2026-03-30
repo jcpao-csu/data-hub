@@ -37,7 +37,7 @@ fig = go.Figure(go.Sankey(
 
 fig.update_layout(title_text="Case Status Flow with Custom Tooltips", font_size=12)
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="container")
 
 # To wrangle
 
@@ -181,7 +181,7 @@ def case_life(
 
     fig.update_layout(title_text="Case Flow Sankey Diagram", font_size=12)
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="container")
 
     st.write(dfs)
 

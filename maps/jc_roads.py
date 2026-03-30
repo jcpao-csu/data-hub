@@ -228,7 +228,7 @@ def render_jc_roads() -> None:
 
         st_folium(
             _build_roads_map(roads, jc_boundary),
-            use_container_width=True,
+            width="container",
             height=620,
             returned_objects=[],
         )
@@ -242,4 +242,4 @@ def render_jc_roads() -> None:
             .sort_values("Road Name")
             .reset_index(drop=True)
         )
-        st.dataframe(named_table, use_container_width=True, hide_index=True)
+        st.dataframe(named_table, width="container", hide_index=True)

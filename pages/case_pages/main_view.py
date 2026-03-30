@@ -70,7 +70,7 @@ with cases_by_year:
         )
     )
 
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
 
 # --- Cases by Referring Agency ---
@@ -114,4 +114,4 @@ with cases_by_agency:
         )
     )
 
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")

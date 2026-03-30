@@ -90,7 +90,7 @@ with st.sidebar:
                 icon=":material/filter_alt:",
                 type="primary",
                 on_click=_update_df,
-                use_container_width=True,
+                width="container",
             )
 
     st.button(
@@ -98,7 +98,7 @@ with st.sidebar:
         on_click=_reset_filters,
         type="secondary",
         icon="🔄",
-        use_container_width=True,
+        width="container",
         help="Restore all filters to their default values.",
     )
 
@@ -118,7 +118,7 @@ _DISPLAY_COLS = ["charge_code", "short_desc", "long_desc", "severity", "class", 
 st.info(f"Displaying {len(st.session_state['glossary_df']):,} charge codes based on current filter selections", icon=":material/info:")
 st.dataframe(
     data=st.session_state["glossary_df"][_DISPLAY_COLS],
-    use_container_width=True,
+    width="container",
     height=1000,
     hide_index=True,
 )

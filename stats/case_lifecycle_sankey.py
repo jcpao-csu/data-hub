@@ -221,4 +221,4 @@ def render_case_lifecycle_sankey(
             "outcomes are looked up from all available data regardless of the date range. "
             "Top referring agencies are shown individually; remaining agencies are grouped."
         )
-        st.plotly_chart(_build_case_lifecycle_sankey(data), use_container_width=True)
+        st.plotly_chart(_build_case_lifecycle_sankey(data), width="container")

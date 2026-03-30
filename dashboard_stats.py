@@ -359,7 +359,7 @@ def stat2a_total_by_year(
         )
     )
 
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
     # Return summary stats
     return (
@@ -467,7 +467,7 @@ def stat2b_total_by_month(
         ) # .interactive()
     )
 
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
     # Return summary stats
     return (
@@ -640,7 +640,7 @@ def under_review_time_series(
         .interactive()
     )
 
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
     # return time_series
 
@@ -732,8 +732,8 @@ def avg_days_to_file_chart(
     )
 
     # --- DISPLAY ---
-    st.altair_chart(chart_year, use_container_width=True)
-    st.altair_chart(chart_month, use_container_width=True)
+    st.altair_chart(chart_year, width="container")
+    st.altair_chart(chart_month, width="container")
 
     # Return combined summary
     return {
@@ -923,7 +923,7 @@ def render_heatmaps(
         if chart is None:
             st.info(f"No data available for **{label}** with the current filters.")
         else:
-            st.altair_chart(chart, use_container_width=True)
+            st.altair_chart(chart, width="container")
 
         st.divider()
 
@@ -1024,7 +1024,7 @@ def render_treemap(rcvd: pd.DataFrame) -> None:
     else:
         fig = _treemap_build(rcvd, "rcvd_lead_category", "agency_name", "Charge Category", "Agency", "Purples")
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="container")
     st.caption("Click any outer tile to drill down into its breakdown. Click the center label to zoom back out.")
 
 
@@ -1121,7 +1121,7 @@ def render_age_groups(rcvd: pd.DataFrame) -> None:
 
     st.header("Defendant Age at Time of Referral")
     st.caption("Breakdown of cases by defendant age group at the time of referral to the prosecuting attorney's office.")
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
 
 def _age_histogram_prepare(rcvd: pd.DataFrame) -> pd.DataFrame:
@@ -1223,7 +1223,7 @@ def render_age_histogram(rcvd: pd.DataFrame) -> None:
 
     st.header("Suspect Age Histogram")
     st.caption("Interactive histogram of suspect age at time of case referral.")
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
 
 # --- RECIDIVISM ---
@@ -1483,12 +1483,12 @@ def render_recidivism(
         selection_mode="single",
     )
     is_normalized = view == "Normalized (%)"
-    st.altair_chart(_build_referral_type_chart(df, is_normalized), use_container_width=True)
+    st.altair_chart(_build_referral_type_chart(df, is_normalized), width="container")
 
     st.divider()
 
     col1, col2 = st.columns(2)
     with col1:
-        st.altair_chart(_build_recurrence_chart(rcvd_full), use_container_width=True)
+        st.altair_chart(_build_recurrence_chart(rcvd_full), width="container")
     with col2:
-        st.altair_chart(_build_time_between_chart(rcvd_full), use_container_width=True)
+        st.altair_chart(_build_time_between_chart(rcvd_full), width="container")

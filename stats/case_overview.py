@@ -2049,7 +2049,7 @@ def render_case_volume(
                         st.altair_chart(
                             _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
                                 subtitle=gt_subtitle),
-                            use_container_width=True,
+                            width="container",
                         )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
@@ -2150,7 +2150,7 @@ def render_case_volume(
                         st.altair_chart(
                             _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
                                 subtitle=gt_subtitle),
-                            use_container_width=True,
+                            width="container",
                         )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
@@ -2248,7 +2248,7 @@ def render_case_volume(
                         st.altair_chart(
                             _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
                                 subtitle=gt_subtitle),
-                            use_container_width=True,
+                            width="container",
                         )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
@@ -2381,7 +2381,7 @@ def render_case_volume(
                         st.altair_chart(
                             _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
                                 subtitle=gt_subtitle),
-                            use_container_width=True,
+                            width="container",
                         )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")

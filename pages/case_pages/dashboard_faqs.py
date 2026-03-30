@@ -85,7 +85,7 @@ def cases_rcvd(rcvd: pd.DataFrame = rcvd):
     # st.badge() #  # PPI # Justice Counts # Measures for Justice | # View-only 
     # st.divider()
     # st.markdown()
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
     # st.write_stream("hello...")
 
 # Status of Received cases
@@ -178,7 +178,7 @@ def rcvd_cases_status(rcvd: pd.DataFrame = rcvd, fld: pd.DataFrame = fld, ntfld:
     # Output
     st.header("📁 Current Status of Cases Received")
     st.caption("Of the cases referred by law enforcement agencies to the prosecuting attorney's office, where along the prosecution process are they?")
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
 
 # Case file rate = # cases filed / (# cases completed review-> filed+ntfld)
@@ -243,7 +243,7 @@ def file_rate(fld: pd.DataFrame = fld, ntfld: pd.DataFrame = ntfld):
     # Output
     st.header("📁 Filing Rate")
     st.caption("Of the cases that have completed review, what % have been filed with the court?")
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
 # Review time (avg/median; file vs not file)
 def decision_time(rcvd: pd.DataFrame = rcvd, fld: pd.DataFrame = fld, ntfld: pd.DataFrame = ntfld):
@@ -326,7 +326,7 @@ def decision_time(rcvd: pd.DataFrame = rcvd, fld: pd.DataFrame = fld, ntfld: pd.
 
     st.header("📁 Duration of Case Review")
     st.caption("Length of time between case referral and charging decision (file vs. decline), both mean and median.")
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
 
 # Total Cases Filed
 def cases_fld(fld: pd.DataFrame = fld):
@@ -359,7 +359,7 @@ def cases_fld(fld: pd.DataFrame = fld):
     # st.badge() #  # PPI # Justice Counts # Measures for Justice | # View-only 
     # st.divider()
     # st.markdown()
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
     # st.write_stream("hello...")
 
 # Total Cases Not Filed
@@ -393,7 +393,7 @@ def cases_ntfld(ntfld: pd.DataFrame = ntfld):
     # st.badge() #  # PPI # Justice Counts # Measures for Justice | # View-only 
     # st.divider()
     # st.markdown()
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
     # st.write_stream("hello...")
 
 # Total Cases Disposed
@@ -427,7 +427,7 @@ def cases_disp(disp: pd.DataFrame = disp):
     # st.badge() #  # PPI # Justice Counts # Measures for Justice | # View-only 
     # st.divider()
     # st.markdown()
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="container")
     # st.write_stream("hello...")
 
 

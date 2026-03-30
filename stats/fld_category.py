@@ -130,10 +130,10 @@ def render_fld_category(fld: pd.DataFrame) -> None:
         with tab_stacked:
             st.altair_chart(
                 _build_fld_category_area(df, domain, colors, True),
-                use_container_width=True,
+                width="container",
             )
         with tab_normalized:
             st.altair_chart(
                 _build_fld_category_area(df, domain, colors, "normalize"),
-                use_container_width=True,
+                width="container",
             )

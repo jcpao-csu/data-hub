@@ -72,9 +72,9 @@ def render_disp_volume(disp: pd.DataFrame) -> None:
         st.header(":material/check_circle: Cases Disposed")
         tab_bar, tab_line = st.tabs(["Bar Chart", "Line Chart"])
         with tab_bar:
-            st.altair_chart(_build_disp_volume_bar(df), use_container_width=True)
+            st.altair_chart(_build_disp_volume_bar(df), width="container")
         with tab_line:
-            st.altair_chart(_build_disp_volume_line(df), use_container_width=True)
+            st.altair_chart(_build_disp_volume_line(df), width="container")
 
 
 # --- render_case_life ---
@@ -198,4 +198,4 @@ def render_case_life(disp: pd.DataFrame, fld_all: pd.DataFrame) -> None:
             f"corresponding filing predates available data (2016 onward).",
             icon=":material/info:",
         )
-        st.altair_chart(_build_case_life_line(df), use_container_width=True)
+        st.altair_chart(_build_case_life_line(df), width="container")

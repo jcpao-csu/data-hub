@@ -205,7 +205,7 @@ def generate_sankey(
 
     # Display in Streamlit app
     st.write(edges)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="container")
 
 
     def calculate_edges(

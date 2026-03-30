@@ -190,4 +190,4 @@ def render_ntfld_sankey(ntfld: pd.DataFrame) -> None:
             ":orange[Pending] (PFI, other jurisdiction), and :red[Unresolved] "
             "(evidence, suppression, self defense, etc.) outcomes."
         )
-        st.plotly_chart(_build_ntfld_sankey(data), use_container_width=True)
+        st.plotly_chart(_build_ntfld_sankey(data), width="container")

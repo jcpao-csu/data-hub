@@ -314,7 +314,7 @@ def dv_timeseries(df: pd.DataFrame, date_col: str, title_name: str, ):
     )
 
 
-    st.altair_chart((chart + today_line + today_text), use_container_width=True)
+    st.altair_chart((chart + today_line + today_text), width="container")
 
 
 
@@ -384,7 +384,7 @@ def ntfld_reasons(ntfld: pd.DataFrame = st.session_state["ntfld_df"], date_col: 
     #     .encode(text=alt.Text("pct:Q", format=".1f"))
     # )
 
-    st.altair_chart(pie_chart, use_container_width=True) # + text
+    st.altair_chart(pie_chart, width="container") # + text
 
 
 # Disposed Outcomes 
@@ -465,7 +465,7 @@ def disp_outcomes(disp: pd.DataFrame = st.session_state["disp_df"], date_col: st
         opacity=alt.condition(selection, alt.value(1), alt.value(0.3))
     )
 
-    st.altair_chart(pie_chart, use_container_width=True) # + text
+    st.altair_chart(pie_chart, width="container") # + text
 
 
 # File (%) Rate
@@ -551,7 +551,7 @@ def file_rate(rcvd: pd.DataFrame = st.session_state["rcvd_df"], fld: pd.DataFram
         opacity=alt.condition(selection, alt.value(1), alt.value(0.3))
     )
 
-    st.altair_chart(pie_chart, use_container_width=True)
+    st.altair_chart(pie_chart, width="container")
 
 # File Lead Charges 
 def file_lead_charges(fld: pd.DataFrame = st.session_state["fld_df"], date_col: str = "earliest_fld_date"): # FLD
@@ -611,7 +611,7 @@ def file_lead_charges(fld: pd.DataFrame = st.session_state["fld_df"], date_col: 
         opacity=alt.condition(selection, alt.value(1), alt.value(0.3))
     )
 
-    st.altair_chart(pie_chart, use_container_width=True)
+    st.altair_chart(pie_chart, width="container")
 
 
 # --- Display --- 

@@ -128,7 +128,7 @@ def render_fsd_sidebar() -> tuple[str, tuple]:
         on_click=_reset_fsd_filters,
         type="secondary",
         icon="🔄",
-        use_container_width=True,
+        width="container",
         help="Restore all filters to their default values.",
     )
 
@@ -268,7 +268,7 @@ def render_fsd_metric(
     prepared = _prepare_fsd_metric(df, data_col, agg_method, date_range, period_view)
     chart    = _build_fsd_bar(prepared, data_col, format_style, threshold, title=title, subtitle=caption, show_value_labels=show_value_labels)
     with st.container(border=True):
-        st.altair_chart(chart, use_container_width=True)
+        st.altair_chart(chart, width="container")
 
 
 # --- Section renderers ---
