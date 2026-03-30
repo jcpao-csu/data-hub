@@ -30,32 +30,32 @@ initialize_session_state()
 pages = {
     "Prosecuting Cases": [
         st.Page("pages/TEMPLATE.py", title="Home"),
-        st.Page("pages/case_pages/main_view.py", title="Overview"),
+        # st.Page("pages/case_pages/main_view.py", title="Overview"),
         # st.Page("pages/case_pages/overview.py", title="Overview2"),
-        st.Page("pages/case_pages/rcvd_cases.py", title="Cases Received"),
-        st.Page("pages/case_pages/fld_cases.py", title="Cases Reviewed"),
-        st.Page("pages/case_pages/ntfld_cases.py", title="Cases Declined"),
-        st.Page("pages/case_pages/disp_cases.py", title="Cases Disposed"),
+        # st.Page("pages/case_pages/rcvd_cases.py", title="Cases Received"),
+        # st.Page("pages/case_pages/fld_cases.py", title="Cases Reviewed"),
+        # st.Page("pages/case_pages/ntfld_cases.py", title="Cases Declined"),
+        # st.Page("pages/case_pages/disp_cases.py", title="Cases Disposed"),
         # st.Page("pages/case_pages/demo_cases.py", title="Defendant Demographics"),
         st.Page("pages/case_pages/dashboard_faqs.py", title="Frequently Asked Questions")
     ],
     "Defendant Demographics": [
-        st.Page("pages/def_pages/demo_cases.py", title="Breakdown by Race"),
-        st.Page("pages/def_pages/by_sex.py", title="Breakdown by Sex"),
-        st.Page("pages/def_pages/by_age.py", title="Breakdown by Age"),
+        # st.Page("pages/def_pages/demo_cases.py", title="Breakdown by Race"),
+        # st.Page("pages/def_pages/by_sex.py", title="Breakdown by Sex"),
+        # st.Page("pages/def_pages/by_age.py", title="Breakdown by Age"),
         st.Page("pages/def_pages/by_zipcode.py", title="Breakdown by ZIP Code"),
-        st.Page("pages/def_pages/prod.py", title="Defendant Production Map"),
+        # st.Page("pages/def_pages/prod.py", title="Defendant Production Map"),
     ],
     # "Violent Crime in KCMO": [
     #     st.Page("pages/violence_pages/shoot_review.py", title="Overview")
     # ],
-    "Domestic Violence": [
-        st.Page("pages/dv_pages/dv_main.py", title="Overview"), # pages/dv_pages/
-        st.Page("pages/dv_pages/dv_cases.py", title="Domestic Assault Cases"),
-        st.Page("pages/dv_pages/ipvi_cases.py", title="Intimate Partner Violence (IPV)"),
-        # st.Page("pages/dv_pages/harassment_cases.py", title="Harassment Cases"),
-        # st.Page("pages/dv_pages/stalking_cases.py", title="Stalking Cases")
-    ],
+    # "Domestic Violence": [
+    #     st.Page("pages/dv_pages/dv_main.py", title="Overview"), # pages/dv_pages/
+    #     st.Page("pages/dv_pages/dv_cases.py", title="Domestic Assault Cases"),
+    #     st.Page("pages/dv_pages/ipvi_cases.py", title="Intimate Partner Violence (IPV)"),
+    #     # st.Page("pages/dv_pages/harassment_cases.py", title="Harassment Cases"),
+    #     # st.Page("pages/dv_pages/stalking_cases.py", title="Stalking Cases")
+    # ],
     "Family Support Division (FSD)": [
         st.Page("pages/fsd_pages/fsd_main.py", title="Overview"),
         st.Page("pages/fsd_pages/fsd_data.py", title="Explore the Data"),
@@ -70,7 +70,7 @@ pages = {
         st.Page("pages/resources_pages/learn_more.py", title="Process of a Case"),
         st.Page("pages/resources_pages/codes_glossary.py", title="Criminal Charge Codes"),
         st.Page("pages/resources_pages/faq_glossary.py", title="FAQ & Glossary"),
-        st.Page("pages/resources_pages/report_search.py", title="Check your police report # status"),
+        st.Page("pages/resources_pages/report_search.py", title="Check the Status of Your Police Report #"),
     ],
 }
 
