@@ -12,7 +12,8 @@ from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_folium import st_folium
 
 _SHP_PATH = "assets/shp/29095_zipcodes/Jackson Zipcodes.shp"
-_COUNTY_SHP_PATH = "assets/shp/tl_2025_us_county/tl_2025_us_county.shp"
+# _COUNTY_SHP_PATH = "assets/shp/tl_2025_us_county/tl_2025_us_county.shp"
+_COUNTY_SHP_PATH = "assets/shp/jackson_county_boundary/jackson_county_ONLY.shp"
 _DEMARCATIONS_PATH = "assets/shp/jcpao_street_demarcations/jcpao_street_demarcations.shp"
 _CENTER = [+39.0053640, -094.3432105]
 _ZOOM = 10
@@ -28,9 +29,9 @@ def _load_geodata() -> tuple[set, gpd.GeoDataFrame, gpd.GeoDataFrame, gpd.GeoDat
     jc_zips = set(gdf["ZCTA5CE20"].astype(str))
 
     counties = gpd.read_file(_COUNTY_SHP_PATH).to_crs(epsg=4326)
-    jc_boundary = counties[
-        (counties["STATEFP"] == "29") & (counties["COUNTYFP"] == "095")
-    ][["geometry"]].copy()
+    # jc_boundary = counties[
+    #     (counties["STATEFP"] == "29") & (counties["COUNTYFP"] == "095")
+    # ][["geometry"]].copy()
 
     demarcations = gpd.read_file(_DEMARCATIONS_PATH).to_crs(epsg=4326)
 
