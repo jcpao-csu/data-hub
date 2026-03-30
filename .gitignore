@@ -2,6 +2,8 @@
 render.sh
 report/
 
+# too large to track, but should be generated from the US Census Bureau's shapefiles
+assets/shp/tl_2025_us_county 
 
 # Streamlit
 .streamlit/secrets.toml
