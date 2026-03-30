@@ -11,7 +11,6 @@ dependencies = [
     "great-tables>=0.21.0",
     "jupyter>=1.1.1",
     "pandas>=2.3.3",
-    "psycopg2>=2.9.11",
     "psycopg2-binary>=2.9.11",
     "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
