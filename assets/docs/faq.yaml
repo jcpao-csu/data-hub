@@ -1,0 +1,96 @@
+faq:
+  - question: "Why did the Prosecuting Attorney's Office decline to file charges due to insufficient evidence?"
+    answer: >-
+      The Prosecuting Attorney's Office carries the burden of proof to establish every element
+      of an offense beyond a reasonable doubt. If the admissible evidence does not support a
+      conviction beyond a reasonable doubt, the charges cannot be filed legally or ethically.
+      See [ABA STANDARDS FOR PROSECUTION FUNCTION 3-4.3(a) (2015); MO. SUP. CT. R. 4-3.8(a)](https://www.courts.mo.gov/page.jsp?id=198937).
+      Thus, before filing charges, the Office must evaluate whether available evidence — such as
+      witness statements, physical evidence, forensic reports, and surveillance footage — is
+      strong enough to support a conviction in court. Pursuing charges without strong evidence
+      risks an unjust prosecution, the possibility of an acquittal, and the misuse of judicial
+      resources. Therefore, when the evidence is insufficient to establish a likelihood of
+      conviction, a prosecutor has an ethical and legal duty to decline to file charges.
+
+  - question: "Why did the Prosecuting Attorney's Office decline to file charges and refer the case to another jurisdiction?"
+    answer: >-
+      The case may need to be transferred to a different jurisdiction for prosecution. For
+      example, it may need to be transferred to Juvenile Court, Municipal Court, Federal Court,
+      or a neighboring jurisdiction such as Clay County, Platte County, or Johnson County.
+      Factors that may impact this decision include the age of the suspect or defendant, or that
+      the facts and evidence forming the criminal activity are improper for the State-level adult
+      criminal justice system in Jackson County.
+
+  - question: "Why did the Prosecuting Attorney's Office decline to file charges due to self-defense or defense of others?"
+    answer: >-
+      The Prosecuting Attorney's Office must examine whether there is evidence of a person using
+      force to protect themselves or another person, given Missouri's use of force statute
+      [RSMo 563.031](https://revisor.mo.gov/main/OneSection.aspx?section=563.031). Once raised
+      by a defendant, Missouri law places the burden on the prosecution to disprove a self-defense
+      or defense of others claim beyond a reasonable doubt through admissible evidence. This means
+      that if the available evidence is unclear or favors the defendant, a conviction would be
+      unlikely, and a prosecutor should refrain from filing charges consistent with applicable
+      ethical and legal rules.
+
+  - question: "Why did the Prosecuting Attorney's Office decline to file charges pending further investigation?"
+    answer: >-
+      The Prosecuting Attorney's Office may return a case to the relevant law enforcement agency
+      to gather additional evidence before making a filing decision. **Note: there could be other
+      reasons the Office determines not to file charges**, such as an uncooperative victim, the
+      statute of limitations having passed, illegally or improperly obtained evidence, or a
+      deceased suspect.
+
+  - question: "What does the Prosecuting Attorney's Office have to prove to file charges?"
+    answer: >-
+      The Prosecuting Attorney's Office has a legal and ethical obligation to prove all aspects
+      of a case beyond a reasonable doubt in order to file charges. The legal standard "beyond a
+      reasonable doubt" is the highest burden of proof in the legal system and is required for a
+      criminal conviction. It means that the evidence must be so convincing that there is no
+      reasonable doubt in the mind of a rational person that the defendant committed the crime.
+      This standard does not require absolute certainty, but it does mean that jurors or a judge
+      must be firmly convinced of the defendant's guilt based on the evidence presented.
+
+  - question: "After a case has been charged, what resources does the Prosecuting Attorney's Office offer to victims?"
+    answer: >-
+      The Prosecuting Attorney's Office is committed to supporting victims throughout the legal
+      process. Consistent with the victim's rights law
+      [RSMo 595.209](https://revisor.mo.gov/main/OneSection.aspx?section=595.209), a dedicated
+      victim advocate will be assigned to a charged case to keep victim(s) informed about case
+      developments and court proceedings. Our advocates provide emotional support, guidance, and
+      connections to social services that can help with counseling and other essential resources.
+      When necessary, our advocates will work with law enforcement and other stakeholders to
+      assist with safety planning. We understand this can be a difficult time, and our goal is to
+      ensure that victims feel supported, heard, and empowered every step of the way.
+
+glossary:
+  - term: "Case Received"
+    definition: >-
+      The submitting law enforcement agency, *finding probable cause*, has completed an
+      investigation or arrested the suspect(s) believed to have been responsible for the reported
+      crime and has formally submitted the case to the Office for review.
+
+  - term: "Case Filed"
+    definition: >-
+      The Prosecuting Attorney's Office, upon review of the evidence and facts of the case,
+      files charges in Court if it finds the suspect *guilty beyond a reasonable doubt*.
+
+  - term: "Case Not Filed"
+    definition: |-
+      Alternatively, if the Prosecuting Attorney's Office does not find the suspect guilty
+      *beyond a reasonable doubt* following review of the evidence and facts of the case, it
+      will decline to file charges in Court. Common reasons to decline filing charges include:
+
+      * Insufficient evidence to prove guilt *beyond a reasonable doubt*
+      * Referred to Other Jurisdiction
+      * Self-Defense
+      * **Pending Further Investigation** (prosecutor returns case to the submitting agency to
+        gather additional evidence prior to making a filing decision)
+
+  - term: "Case Disposed"
+    definition: |-
+      The case is closed. Common disposition outcomes include:
+
+      * Guilty plea
+      * (Non-)Guilty verdict from trial
+      * Defendant entered diversion program
+      * **Nolle prosequi** (prosecutor dismisses criminal charges)

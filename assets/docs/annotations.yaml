@@ -1,0 +1,222 @@
+received:
+  - metric: "By Referring Agency"
+    notes: |-
+      Jackson County is comprised of 18 or so local municipalities, and the Prosecuting Attorney's Office receives cases from 
+      their respective police agencies, as well as other agencies from the local, state, and federal level. Case status volume
+      broken down by referring agency has been limited to the top agencies that refer cases to the JCPAO: 
+
+      1. KCPD  
+      2. Independence PD  
+      3. Lee's Summit PD  
+      4. Blue Springs PD  
+      5. Raytown PD  
+      6. Grandview PD  
+      7. Jackson County Sheriff  
+
+      Remaining cases are grouped into an "Other" category, that comprise all other agencies that have referred cases to the JCPAO.
+      To further explore criminal cases by police agency, please use the "Referring Police Agency" dashboard filter located in the
+      sidebar to the left of the dashboard.  
+
+  - metric: "By Review Status"
+    notes: |-
+      Once the Prosecutor's Office is in receipt of a criminal case by a police agency, the case is routed within the Office's internal case management system for review. An assistant prosecuting attorney will be assigned a case to review the Probable Cause statement and all other evidence to make the appropriate determination as to whether to formally file charges and prosecute. 
+
+      The possible outcomes from case review are:
+      1. Completed Review - prosecuting attorney has reviewed all of the available evidence, and has made a decision on whether to file
+          - Filed - case is filed with the court
+          - Not Filed - case is not filed; case can be re-opened if new evidence is produced (not to be confused with dismissal without prejudice)
+      2. (Still) Under Review - still pending review 
+      3. Pending Further Investigation (PFI) - prosecuting attorney does not file the case, but defers back to the referring agency to produce additional evidence (e.g., pending witness interviews, forensic DNA analysis, surveillance video, etc.)
+
+  - metric: "By Arrest Status"
+    notes: |-
+      Cases with an arrest date are considered "in custody" cases, while cases without an arrest date are considered "anytime" cases.
+      Under Missouri law (RSMo 544.170), suspects arrested for a crime must be released within 24 hours unless criminal charges are filed and the individual is held by a warrant. 
+      Cases referred to the Prosecutor's Office without an associated arrest are considered "anytime" cases, in which a prosectuing attorney can review and decide to file charges at any time (not subject to the 24 hour holding rule).
+
+  - metric: "By Referring Lead Charge Severity-Class"
+    notes: |- 
+      A criminal case can be comprised of one or more charges, and the "lead charge" is the most serious charge in a case (criminal charges are typically ordered by severity). 
+      The severity class of the lead charge is determined by Missouri law, and ranges from Class A Felony (most severe) to Class D Misdemeanor (least severe). 
+      The severity class of a charge informs prosecutorial filing decisions, as well as sentencing/penalty guidelines (if convicted). 
+
+  - metric: "By Referring Lead Charge Category"
+    notes: |-
+      Charge codes are manually grouped into categories established by the JCPAO, derived in part from the National Crime Information Center (NCIC) classification system maintained by the FBI and adopted by the Missouri State Highway Patrol (MSHP).
+      To further explore criminal cases by charge category, please use the "Lead Charge Category" dashboard filter located in the sidebar to the left of the dashboard.
+
+  - metric: "By Defendant Race"
+    notes: |- 
+      Demographic breakdown is based on unique cases, not unique defendants. 
+
+  - metric: "By Defendant Sex"
+    notes: |-
+      Demographic breakdown is based on unique cases, not unique defendants. 
+
+  - metric: "By Defendant Age"
+    notes: |-
+      Demographic breakdown is based on unique cases, not unique defendants. 
+
+filed:
+  - metric: "By Referring Agency"
+    notes: |-
+      Jackson County is comprised of 18 or so local municipalities, and the Prosecuting Attorney's Office receives cases from 
+      their respective police agencies, as well as other agencies from the local, state, and federal level. Case status volume
+      broken down by referring agency has been limited to the top agencies that refer cases to the JCPAO: 
+
+      1. KCPD  
+      2. Independence PD  
+      3. Lee's Summit PD  
+      4. Blue Springs PD  
+      5. Raytown PD  
+      6. Grandview PD  
+      7. Jackson County Sheriff  
+
+      Remaining cases are grouped into an "Other" category, that comprise all other agencies that have referred cases to the JCPAO.
+      To further explore criminal cases by police agency, please use the "Referring Police Agency" dashboard filter located in the
+      sidebar to the left of the dashboard.  
+
+  - metric: "By Open Case Status"
+    notes: |-
+      Once a case is filed, it is considered an "open" (i.e., active, pending) case until it is disposed (e.g., via guilty plea, trial verdict, dismissal, diversion, etc.). 
+
+  - metric: "By Filed Lead Charge Severity-Class"
+    notes: |- 
+      A criminal case can be comprised of one or more charges, and the "lead charge" is the most serious charge in a case (criminal charges are typically ordered by severity). 
+      The severity class of the lead charge is determined by Missouri law, and ranges from Class A Felony (most severe) to Class D Misdemeanor (least severe). 
+      The severity class of a charge informs prosecutorial filing decisions, as well as sentencing/penalty guidelines (if convicted). 
+
+  - metric: "By Filed Lead Charge Category"
+    notes: |-
+      Charge codes are manually grouped into categories established by the JCPAO, derived in part from the National Crime Information Center (NCIC) classification system maintained by the FBI and adopted by the Missouri State Highway Patrol (MSHP).
+      To further explore criminal cases by charge category, please use the "Lead Charge Category" dashboard filter located in the sidebar to the left of the dashboard.
+
+  - metric: "By File Rate"
+    notes: |- 
+      The file rate is the percentage of cases that have completed review that were filed. 
+      Cases that have completed review are cases in which a prosecuting attorney has reviewed all of the available evidence and made a decision on whether to file.
+      Cases pending further investigation, not filed as part of plea negotiations on a separate case or charge (on that same case), or eventually re-filed are excluded from cases not filed. 
+
+  - metric: "By Defendant Race"
+    notes: |- 
+      Demographic breakdown is based on unique cases, not unique defendants. 
+
+  - metric: "By Defendant Sex"
+    notes: |-
+      Demographic breakdown is based on unique cases, not unique defendants. 
+      
+  - metric: "By Defendant Age"
+    notes: |-
+      Demographic breakdown is based on unique cases, not unique defendants. 
+
+not_filed:
+  - metric: "By Referring Agency"
+    notes: |-
+      Jackson County is comprised of 18 or so local municipalities, and the Prosecuting Attorney's Office receives cases from 
+      their respective police agencies, as well as other agencies from the local, state, and federal level. Case status volume
+      broken down by referring agency has been limited to the top agencies that refer cases to the JCPAO: 
+
+      1. KCPD  
+      2. Independence PD  
+      3. Lee's Summit PD  
+      4. Blue Springs PD  
+      5. Raytown PD  
+      6. Grandview PD  
+      7. Jackson County Sheriff  
+
+      Remaining cases are grouped into an "Other" category, that comprise all other agencies that have referred cases to the JCPAO.
+      To further explore criminal cases by police agency, please use the "Referring Police Agency" dashboard filter located in the
+      sidebar to the left of the dashboard.  
+
+  - metric: "By Referring Lead Charge Severity-Class"
+    notes: |- 
+        A criminal case can be comprised of one or more charges, and the "lead charge" is the most serious charge in a case (criminal charges are typically ordered by severity). 
+        The severity class of the lead charge is determined by Missouri law, and ranges from Class A Felony (most severe) to Class D Misdemeanor (least severe). 
+        The severity class of a charge informs prosecutorial filing decisions, as well as sentencing/penalty guidelines (if convicted). 
+
+  - metric: "By Referring Lead Charge Category"
+    notes: |-
+      Charge codes are manually grouped into categories established by the JCPAO, derived in part from the National Crime Information Center (NCIC) classification system maintained by the FBI and adopted by the Missouri State Highway Patrol (MSHP).
+      To further explore criminal cases by charge category, please use the "Lead Charge Category" dashboard filter located in the sidebar to the left of the dashboard.
+
+  - metric: "By Not Filed Reason"
+    notes: |-
+      The Prosecuting Attorney's Office may decline to file charges for a variety of reasons.
+
+  - metric: "By Re-Filing Status"
+    notes: |-
+      Cases that are not filed can be re-filed if new evidence is produced. The Prosecuting Attorney's Office may also decline to file charges as part of plea negotiations on a separate case or charge (on that same case), and eventually re-file the case or charge as part of the plea agreement.
+
+  - metric: "By Defendant Race"
+    notes: |- 
+      Demographic breakdown is based on unique cases, not unique defendants. 
+
+  - metric: "By Defendant Sex"
+    notes: |-
+      Demographic breakdown is based on unique cases, not unique defendants. 
+      
+  - metric: "By Defendant Age"
+    notes: |-
+      Demographic breakdown is based on unique cases, not unique defendants. 
+
+disposed:
+  - metric: "By Referring Agency"
+    notes: |-
+      Jackson County is comprised of 18 or so local municipalities, and the Prosecuting Attorney's Office receives cases from 
+      their respective police agencies, as well as other agencies from the local, state, and federal level. Case status volume
+      broken down by referring agency has been limited to the top agencies that refer cases to the JCPAO: 
+
+      1. KCPD  
+      2. Independence PD  
+      3. Lee's Summit PD  
+      4. Blue Springs PD  
+      5. Raytown PD  
+      6. Grandview PD  
+      7. Jackson County Sheriff  
+
+      Remaining cases are grouped into an "Other" category, that comprise all other agencies that have referred cases to the JCPAO.
+      To further explore criminal cases by police agency, please use the "Referring Police Agency" dashboard filter located in the
+      sidebar to the left of the dashboard.  
+
+  - metric: "By Disposed Lead Charge Severity-Class"
+    notes: |- 
+      A criminal case can be comprised of one or more charges, and the "lead charge" is the most serious charge in a case (criminal charges are typically ordered by severity). 
+      The severity class of the lead charge is determined by Missouri law, and ranges from Class A Felony (most severe) to Class D Misdemeanor (least severe). 
+      The severity class of a charge informs prosecutorial filing decisions, as well as sentencing/penalty guidelines (if convicted). 
+
+  - metric: "By Disposed Lead Charge Category"
+    notes: |-
+      Charge codes are manually grouped into categories established by the JCPAO, derived in part from the National Crime Information Center (NCIC) classification system maintained by the FBI and adopted by the Missouri State Highway Patrol (MSHP).
+      To further explore criminal cases by charge category, please use the "Lead Charge Category" dashboard filter located in the sidebar to the left of the dashboard.
+
+  - metric: "By Disposition Outcome"
+    notes: |-
+      Conviction rate is the percentage of cases that have been disposed by conviction, namely: guilty plea or guilty verdict at trial.
+
+  - metric: "By Guilty Plea"
+    notes: |-
+      Proportion of cases disposed by guilty plea. Most cases disposed by the JCPAO are done so via plea negotiations.
+
+  - metric: "Went to Trial"
+    notes: |-
+      Proportion of cases disposed that went to trial, broken down by outcome (conviction vs. acquittal).
+
+  - metric: "By Nolle Prosequi"
+    notes: |-
+      Proportion of cases disposed by nolle prosequi, which is a formal notice of abandonment by the prosecutor of all or part of a criminal case. A case can be nolle prossed for a variety of reasons, such as insufficient evidence to proceed to trial, uncooperative victim, or as part of plea negotiations on a separate case or charge (on that same case).
+
+  - metric: "By Diversion"
+    notes: |-
+      Proportion of cases disposed by diversion. Jackson County offers a variety of diversion programs for certain eligible cases, such as drug court, mental health court, veterans court, domestic violence court, etc. Diversion is an alternative to traditional prosecution in which eligible defendants can receive treatment and other supportive services in lieu of incarceration, in hopes to reduce recidivism.
+
+  - metric: "By Defendant Race"
+    notes: |- 
+      Demographic breakdown is based on unique cases, not unique defendants. 
+
+  - metric: "By Defendant Sex"
+    notes: |-
+      Demographic breakdown is based on unique cases, not unique defendants. 
+      
+  - metric: "By Defendant Age"
+    notes: |-
+      Demographic breakdown is based on unique cases, not unique defendants. 
