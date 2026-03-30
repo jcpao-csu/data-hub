@@ -7,6 +7,8 @@ import altair as alt
 import numpy as np
 import pandas as pd
 import streamlit as st
+import yaml
+from pathlib import Path
 
 from great_tables import GT, loc
 from great_tables.style import borders, text
@@ -14,6 +16,38 @@ from streamlit_extras.great_tables import great_tables
 
 from stats.gt_theme import apply_dark_theme
 from stats.fld_sevclass import _DOMAIN as _SEVCLASS_DOMAIN, _COLOR_MAP as _SEVCLASS_COLOR_MAP, _map_sevclass
+
+# --- Annotations ---
+
+_YAML_STATUS_MAP = {
+    "received":  "Received",
+    "filed":     "Filed",
+    "not_filed": "Not Filed",
+    "disposed":  "Disposed",
+}
+
+def _load_annotations() -> dict[tuple[str, str], str]:
+    path = Path(__file__).parent.parent / "assets" / "docs" / "annotations.yaml"
+    try:
+        raw = yaml.safe_load(path.read_text())
+    except Exception:
+        return {}
+    out = {}
+    for yaml_key, ui_status in _YAML_STATUS_MAP.items():
+        for entry in raw.get(yaml_key, []):
+            notes = entry.get("notes")
+            if notes:
+                out[(ui_status, entry["metric"])] = notes.strip()
+    return out
+
+_ANNOTATIONS: dict[tuple[str, str], str] = _load_annotations()
+
+
+def _render_notes(status: str, metric: str) -> None:
+    notes = _ANNOTATIONS.get((status, metric))
+    if notes:
+        with st.expander("View notes"):
+            st.caption(notes)
 
 _DISP_RANK_LABELS = {
     1:   "Trial — Guilty",
@@ -28,6 +62,17 @@ _DISP_RANK_LABELS = {
     9:   "Nolle — Statute of Limitations",
     10:  "Nolle — Lack of Evidence",
     11:  "Nolle — NP-Other",
+}
+
+_NOLLE_RANK_LABELS = {
+    1: "Diversion",
+    2: "Defendant Deceased",
+    3: "Admin",
+    4: "Other Jurisdiction",
+    5: "Self Defense",
+    6: "Statute of Limitations",
+    7: "Lack of Evidence",
+    8: "Lack of Evidence", # Other
 }
 
 _DISP_RANK_CATEGORY = {
@@ -55,40 +100,47 @@ _STATUS_MAP = {
 # Available breakdown options per status (displayed in right-column selectbox)
 _DETAIL_OPTIONS = {
     "Received": [
-        "By Referring Agency", 
-        "By Review Status", 
-        "By Arrest Status", 
-        "By Referring Lead Charge Severity-Class", 
-        "By Referring Lead Charge Category", 
-        "By Defendant Race", 
-        "By Defendant Sex"
+        "By Referring Agency",
+        "By Review Status",
+        "By Arrest Status",
+        "By Referring Lead Charge Severity-Class",
+        "By Referring Lead Charge Category",
+        "By Defendant Race",
+        "By Defendant Sex",
+        "By Defendant Age",
     ],
     "Filed": [
-        "By Referring Agency", 
-        "By Open Case Status", 
-        "By Filed Lead Charge Severity-Class", 
-        "By Filed Lead Charge Category", 
-        "By File Rate", 
-        "By Defendant Race", 
-        "By Defendant Sex"
+        "By Referring Agency",
+        "By Open Case Status",
+        "By Filed Lead Charge Severity-Class",
+        "By Filed Lead Charge Category",
+        "By File Rate",
+        "By Defendant Race",
+        "By Defendant Sex",
+        "By Defendant Age",
     ],
     "Not Filed": [
-        "By Referring Agency", 
-        "By Referring Lead Charge Severity-Class", 
-        "By Referring Lead Charge Category", 
-        "By Not Filed Reason", 
-        "By Re-Filing Status", 
-        "By Defendant Race", 
-        "By Defendant Sex"
+        "By Referring Agency",
+        "By Referring Lead Charge Severity-Class",
+        "By Referring Lead Charge Category",
+        "By Not Filed Reason",
+        "By Re-Filing Status",
+        "By Defendant Race",
+        "By Defendant Sex",
+        "By Defendant Age",
     ],
     "Disposed": [
-        "By Referring Agency", 
-        "By Disposed Lead Charge Severity-Class", 
+        "By Referring Agency",
+        "By Disposed Lead Charge Severity-Class",
         "By Disposed Lead Charge Category",
         "By Disposition Outcome",
-        "By Guilty Plea", 
-        "By Defendant Race", 
-        "By Defendant Sex"
+        "By Guilty Plea",
+        "Went to Trial",
+        "By Nolle Prosequi",
+        "By Diversion",
+        "By Defendant Race",
+        "By Defendant Sex",
+        "By Defendant Age",
     ],
 }
 
@@ -395,6 +447,114 @@ def _build_arrest_status_donut(df: pd.DataFrame, title: str = "", subtitle: str 
     return (arc + center_total + center_sub).properties(
         width="container",
         height=315,
+        title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
+    )
+
+
+_AGE_BINS   = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 200]
+_AGE_LABELS = [
+    "Under 5", "5–9", "10–14", "15–19", "20–24", "25–29", "30–34", "35–39",
+    "40–44", "45–49", "50–54", "55–59", "60–64", "65–69", "70–74", "75–79",
+    "80–84", "85 and over",
+]
+
+
+def _prepare_defendant_age(
+    src: pd.DataFrame,
+    period: str | None,
+) -> tuple[pd.DataFrame, float | None]:
+    """Compute defendant age at referral (ref_date - def_dob) and bin by US Census age groups.
+    Returns (counts_df, median_age). Rows with missing ref_date or def_dob are excluded.
+    """
+    df = src.copy()
+    if period:
+        df = df[df["period"].astype(str) == period]
+    df = df.drop_duplicates("pbk_num")
+
+    df["ref_date"] = pd.to_datetime(df["ref_date"], errors="coerce")
+    df["def_dob"]  = pd.to_datetime(df["def_dob"],  errors="coerce")
+    df = df.dropna(subset=["ref_date", "def_dob"])
+
+    df["age"] = (df["ref_date"] - df["def_dob"]).dt.days / 365.25
+    # Drop implausible ages (negative or over 120)
+    df = df[(df["age"] >= 0) & (df["age"] < 120)]
+
+    median_age = round(df["age"].median(), 1) if not df.empty else None
+
+    df["age_group"] = pd.cut(
+        df["age"],
+        bins=_AGE_BINS,
+        labels=_AGE_LABELS,
+        right=False,
+    ).astype(str)
+
+    counts = (
+        df.groupby("age_group", observed=True)["pbk_num"]
+        .nunique()
+        .reindex(_AGE_LABELS, fill_value=0)
+        .reset_index(name="count")
+    )
+    counts.rename(columns={"index": "age_group"}, inplace=True)
+    total = counts["count"].sum()
+    counts["pct"] = (counts["count"] / total * 100).round(1) if total else 0.0
+
+    return counts, median_age
+
+
+def _build_defendant_age_bar(
+    df: pd.DataFrame,
+    median_age: float | None,
+    title: str = "",
+    subtitle: str = "",
+) -> alt.Chart:
+    """Horizontal bar chart — cases by defendant age group at referral; median annotation."""
+    bars = (
+        alt.Chart(df)
+        .mark_bar(color="#4da6ff")
+        .encode(
+            y=alt.Y("age_group:O", sort=_AGE_LABELS, title=None,
+                    axis=alt.Axis(labelFontSize=11)),
+            x=alt.X("count:Q", title=None, axis=None),
+            tooltip=[
+                alt.Tooltip("age_group:O", title="Age Group"),
+                alt.Tooltip("count:Q",     title="Cases",      format=","),
+                alt.Tooltip("pct:Q",       title="% of Total", format=".1f"),
+            ],
+        )
+    )
+
+    labels = (
+        alt.Chart(df)
+        .mark_text(dx=6, align="left", size=10, color="#c9d6e3")
+        .encode(
+            y=alt.Y("age_group:O", sort=_AGE_LABELS),
+            x=alt.X("count:Q"),
+            text=alt.Text("count:Q", format=","),
+            tooltip=alt.value(None),
+        )
+    )
+
+    chart = bars + labels
+
+    if median_age is not None:
+        median_label = f"Median: {median_age:.1f} yrs"
+        median_df = pd.DataFrame({"label": [median_label]})
+        median_text = (
+            alt.Chart(median_df)
+            .mark_text(align="right", baseline="top", dx=-4, dy=4,
+                       fontSize=12, fontWeight="bold", color="#f28e2b")
+            .encode(
+                x=alt.value("width"),
+                y=alt.value(0),
+                text="label:N",
+                tooltip=alt.value(None),
+            )
+        )
+        chart = chart + median_text
+
+    return chart.properties(
+        width="container",
+        height=420,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
 
@@ -1102,7 +1262,266 @@ def _build_guilty_plea_donut(df: pd.DataFrame, title: str = "", subtitle: str = 
 
     arc = base.mark_arc(innerRadius=56, outerRadius=120, stroke="#e8edf2", strokeWidth=1.4, strokeOpacity=1)
 
-    center_df = pd.DataFrame({"total": [f"{total:,}"], "sub": ["cases"]})
+    guilty_plea = int(df.loc[df["plea_status"] == "Guilty Plea", "count"].sum())
+    guilty_plea_pct = guilty_plea / total * 100 if total else 0.0
+    center_df = pd.DataFrame({"top": [f"{guilty_plea_pct:.1f}%"], "sub": ["guilty plea"]})
+    center_total = (
+        alt.Chart(center_df)
+        .mark_text(size=18, fontWeight="bold", color="#e8edf2", dy=-9)
+        .encode(text="top:N", tooltip=alt.value(None))
+    )
+    center_sub = (
+        alt.Chart(center_df)
+        .mark_text(size=11, color="#6b7a99", dy=9)
+        .encode(text="sub:N", tooltip=alt.value(None))
+    )
+
+    return (arc + center_total + center_sub).properties(
+        width="container",
+        height=315,
+        title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
+    )
+
+
+_TRIAL_OUTCOME_ORDER  = ["Guilty", "Not Guilty"]
+_TRIAL_OUTCOME_COLORS = ["#3db87a", "#e05c5c"]
+
+
+def _prepare_went_to_trial(
+    disp: pd.DataFrame,
+    period: str | None,
+) -> pd.DataFrame:
+    """Filter disposed cases where min_disp_trial is True; count by min_disp_trial_outcome."""
+    df = disp.copy()
+    if period:
+        df = df[df["period"].astype(str) == period]
+    df = df.drop_duplicates("pbk_num")
+    df = df[df["min_disp_trial"].fillna(False).astype(bool)]
+
+    df["trial_outcome"] = (
+        df["min_disp_trial_outcome"]
+        .fillna("Unknown")
+        .replace("", "Unknown")
+    )
+    # Keep only Guilty / Not Guilty; lump anything else into Not Guilty bucket if needed
+    df["trial_outcome"] = df["trial_outcome"].where(
+        df["trial_outcome"].isin(_TRIAL_OUTCOME_ORDER), other="Not Guilty"
+    )
+
+    counts = (
+        df.groupby("trial_outcome")["pbk_num"]
+        .nunique()
+        .reindex(_TRIAL_OUTCOME_ORDER, fill_value=0)
+        .reset_index(name="count")
+    )
+    total = counts["count"].sum()
+    counts["pct"] = (counts["count"] / total * 100).round(1) if total else 0.0
+    return counts
+
+
+def _build_went_to_trial_donut(df: pd.DataFrame, title: str = "", subtitle: str = "") -> alt.Chart:
+    """Donut chart — trial outcomes: Guilty vs Not Guilty; center shows total cases went to trial."""
+    total = int(df["count"].sum())
+
+    color_enc = alt.Color(
+        "trial_outcome:N",
+        sort=_TRIAL_OUTCOME_ORDER,
+        scale=alt.Scale(domain=_TRIAL_OUTCOME_ORDER, range=_TRIAL_OUTCOME_COLORS),
+        legend=None,
+    )
+    tooltips = [
+        alt.Tooltip("trial_outcome:N", title="Outcome"),
+        alt.Tooltip("count:Q",         title="Cases",      format=","),
+        alt.Tooltip("pct:Q",           title="% of Total", format=".1f"),
+    ]
+
+    base = alt.Chart(df).encode(
+        theta=alt.Theta("count:Q", stack=True),
+        order=alt.Order("count:Q", sort="descending"),
+        color=color_enc,
+        tooltip=tooltips,
+    )
+
+    arc = base.mark_arc(innerRadius=56, outerRadius=120, stroke="#e8edf2", strokeWidth=1.4, strokeOpacity=1)
+
+    center_df = pd.DataFrame({"top": [f"{total:,}"], "sub": ["went to trial"]})
+    center_total = (
+        alt.Chart(center_df)
+        .mark_text(size=18, fontWeight="bold", color="#e8edf2", dy=-9)
+        .encode(text="top:N", tooltip=alt.value(None))
+    )
+    center_sub = (
+        alt.Chart(center_df)
+        .mark_text(size=11, color="#6b7a99", dy=9)
+        .encode(text="sub:N", tooltip=alt.value(None))
+    )
+
+    return (arc + center_total + center_sub).properties(
+        width="container",
+        height=315,
+        title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
+    )
+
+
+def _prepare_nolle_prosequi(
+    disp: pd.DataFrame,
+    period: str | None,
+) -> tuple[pd.DataFrame, list[str], list[str]]:
+    """Filter disposed cases where min_disp_nolle is True (excluding rank 1 Diversion); count by nolle rank label."""
+    df = disp.copy()
+    if period:
+        df = df[df["period"].astype(str) == period]
+    df = df.drop_duplicates("pbk_num")
+    df = df[df["min_disp_nolle"].fillna(False).astype(bool)]
+
+    # Exclude rank 1 (Diversion) and map remaining ranks to labels
+    df = df[df["min_disp_nolle_rank"] != 1]
+    df["nolle_label"] = df["min_disp_nolle_rank"].map(_NOLLE_RANK_LABELS).fillna(_OTHER_LABEL)
+
+    # Fixed domain: unique labels for ranks 2–8 in order (ranks 7+8 both map to "Lack of Evidence")
+    seen: set = set()
+    domain = []
+    for r in sorted(k for k in _NOLLE_RANK_LABELS if k != 1):
+        label = _NOLLE_RANK_LABELS[r]
+        if label not in seen:
+            seen.add(label)
+            domain.append(label)
+
+    counts = (
+        df.groupby("nolle_label")["pbk_num"]
+        .nunique()
+        .reindex(domain, fill_value=0)
+        .reset_index(name="count")
+    )
+    # Drop zero-count rows and rebuild domain to only present labels
+    counts = counts[counts["count"] > 0].reset_index(drop=True)
+    domain = counts["nolle_label"].tolist()
+
+    total = counts["count"].sum()
+    counts["pct"] = (counts["count"] / total * 100).round(1) if total else 0.0
+
+    colors = _CATEGORY_PALETTE[: len(domain)]
+    return counts, domain, colors
+
+
+def _build_nolle_prosequi_donut(
+    df: pd.DataFrame,
+    domain: list[str],
+    colors: list[str],
+    title: str = "",
+    subtitle: str = "",
+) -> alt.Chart:
+    """Donut chart — nolle prosequi cases broken down by description; center shows total nolle cases."""
+    total = int(df["count"].sum())
+
+    color_enc = alt.Color(
+        "nolle_label:N",
+        sort=domain,
+        scale=alt.Scale(domain=domain, range=colors),
+        legend=None,
+    )
+    tooltips = [
+        alt.Tooltip("nolle_label:N", title="Reason"),
+        alt.Tooltip("count:Q",       title="Cases",      format=","),
+        alt.Tooltip("pct:Q",         title="% of Total", format=".1f"),
+    ]
+
+    base = alt.Chart(df).encode(
+        theta=alt.Theta("count:Q", stack=True),
+        order=alt.Order("count:Q", sort="descending"),
+        color=color_enc,
+        tooltip=tooltips,
+    )
+
+    arc = base.mark_arc(innerRadius=56, outerRadius=120, stroke="#e8edf2", strokeWidth=1.4, strokeOpacity=1)
+
+    center_df = pd.DataFrame({"total": [f"{total:,}"], "sub": ["nolle prosequi"]})
+    center_total = (
+        alt.Chart(center_df)
+        .mark_text(size=18, fontWeight="bold", color="#e8edf2", dy=-9)
+        .encode(text="total:N", tooltip=alt.value(None))
+    )
+    center_sub = (
+        alt.Chart(center_df)
+        .mark_text(size=11, color="#6b7a99", dy=9)
+        .encode(text="sub:N", tooltip=alt.value(None))
+    )
+
+    return (arc + center_total + center_sub).properties(
+        width="container",
+        height=315,
+        title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
+    )
+
+
+def _prepare_diversion(
+    disp: pd.DataFrame,
+    period: str | None,
+) -> tuple[pd.DataFrame, list[str], list[str]]:
+    """Filter disposed cases where min_disp_nolle_rank == 1 (Diversion); count by min_disp_nolle_desc."""
+    df = disp.copy()
+    if period:
+        df = df[df["period"].astype(str) == period]
+    df = df.drop_duplicates("pbk_num")
+    df = df[df["min_disp_nolle_rank"] == 1]
+
+    df["diversion_desc"] = df["min_disp_nolle_desc"].fillna(_OTHER_LABEL).replace("", _OTHER_LABEL)
+
+    counts = (
+        df.groupby("diversion_desc")["pbk_num"]
+        .nunique()
+        .reset_index(name="count")
+        .sort_values("count", ascending=False)
+    )
+
+    top10 = counts.head(10).copy()
+    other = int(counts.iloc[10:]["count"].sum())
+    if other > 0:
+        top10 = pd.concat(
+            [top10, pd.DataFrame([{"diversion_desc": _OTHER_LABEL, "count": other}])],
+            ignore_index=True,
+        )
+
+    total = top10["count"].sum()
+    top10["pct"] = (top10["count"] / total * 100).round(1) if total else 0.0
+
+    domain = top10["diversion_desc"].tolist()
+    colors = _CATEGORY_PALETTE[: len(domain)]
+    return top10, domain, colors
+
+
+def _build_diversion_donut(
+    df: pd.DataFrame,
+    domain: list[str],
+    colors: list[str],
+    title: str = "",
+    subtitle: str = "",
+) -> alt.Chart:
+    """Donut chart — diversion cases broken down by description; center shows total diversion cases."""
+    total = int(df["count"].sum())
+
+    color_enc = alt.Color(
+        "diversion_desc:N",
+        sort=domain,
+        scale=alt.Scale(domain=domain, range=colors),
+        legend=None,
+    )
+    tooltips = [
+        alt.Tooltip("diversion_desc:N", title="Description"),
+        alt.Tooltip("count:Q",          title="Cases",      format=","),
+        alt.Tooltip("pct:Q",            title="% of Total", format=".1f"),
+    ]
+
+    base = alt.Chart(df).encode(
+        theta=alt.Theta("count:Q", stack=True),
+        order=alt.Order("count:Q", sort="descending"),
+        color=color_enc,
+        tooltip=tooltips,
+    )
+
+    arc = base.mark_arc(innerRadius=56, outerRadius=120, stroke="#e8edf2", strokeWidth=1.4, strokeOpacity=1)
+
+    center_df = pd.DataFrame({"total": [f"{total:,}"], "sub": ["diversion"]})
     center_total = (
         alt.Chart(center_df)
         .mark_text(size=18, fontWeight="bold", color="#e8edf2", dy=-9)
@@ -1303,16 +1722,20 @@ def _build_single_volume_bar(df: pd.DataFrame, color: str, title: str = "", subt
         .add_params(click_sel)
     )
 
-    labels = (
-        base
-        .mark_text(dy=-10, size=10, color="#c9d6e3")
-        .encode(
-            y=alt.Y("total_cases:Q"),
-            text=alt.Text("total_cases:Q", format=","),
-        )
-    )
+    chart = bars
 
-    return (bars + labels).properties(
+    if len(df) <= 15:
+        labels = (
+            base
+            .mark_text(dy=-10, size=10, color="#c9d6e3")
+            .encode(
+                y=alt.Y("total_cases:Q"),
+                text=alt.Text("total_cases:Q", format=","),
+            )
+        )
+        chart = bars + labels
+
+    return chart.properties(
         width="container",
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1543,6 +1966,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_agency_gt(agency_df, gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Review Status":
                     fld_src   = FLD   if FLD   is not None else fld
@@ -1556,6 +1980,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(review_df, "status", "Status", "By Review Status", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Arrest Status":
                     arrest_df = _prepare_arrest_status(rcvd, selected_period)
@@ -1567,6 +1992,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(arrest_df, "arrest_status", "Status", "By Arrest Status", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Referring Lead Charge Category":
                     category_df, domain, colors = _prepare_charge_category(rcvd, selected_period, "rcvd_lead_category")
@@ -1578,6 +2004,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(category_df, "category", "Category", "By Referring Lead Charge Category", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Referring Lead Charge Severity-Class":
                     sevclass_df, domain, colors = _prepare_sevclass_breakdown(rcvd, "rcvd_lead_sevclass_rank", selected_period)
@@ -1589,6 +2016,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Referring Lead Charge Severity-Class", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Defendant Race":
                     race_df, domain, colors = _prepare_demographic_breakdown(rcvd, "def_race", selected_period)
@@ -1600,6 +2028,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Defendant Sex":
                     sex_df, domain, colors = _prepare_demographic_breakdown(rcvd, "def_sex", selected_period)
@@ -1611,6 +2040,20 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
+
+                elif selected_status == "Received" and selected_detail == "By Defendant Age":
+                    age_df, median_age = _prepare_defendant_age(rcvd, selected_period)
+                    gt_subtitle = f"Defendant age at referral for cases received {_in}"
+                    with st.container(border=True):
+                        st.altair_chart(
+                            _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
+                                subtitle=gt_subtitle),
+                            use_container_width=True,
+                        )
+                    with st.expander("View data table"):
+                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Referring Agency":
                     agency_df, domain, colors = _prepare_agency_breakdown(fld, selected_period)
@@ -1622,6 +2065,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_agency_gt(agency_df, gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Filed Lead Charge Category":
                     category_df, domain, colors = _prepare_charge_category(fld, selected_period, "fld_lead_category")
@@ -1633,6 +2077,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(category_df, "category", "Category", "By Filed Lead Charge Category", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Open Case Status":
                     disp_src = DISP if DISP is not None else disp
@@ -1645,13 +2090,13 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(open_df, "open_status", "Status", "By Open Case Status", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By File Rate":
                     fld_src = FLD if FLD is not None else fld
                     rate_df = _prepare_file_rate_status(fld, ntfld, fld_src, selected_period)
                     gt_subtitle = (
-                        f"Share of completed-review cases {_in} that were filed. "
-                        f"Excludes PFI, plea deal dismissals, and not-filed cases later re-filed."
+                        f"Filing rate of cases that completed review {_in}"
                     )
                     st.altair_chart(
                         _build_file_rate_donut(rate_df, title="By File Rate",
@@ -1659,7 +2104,8 @@ def render_case_volume(
                         width="stretch", height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(rate_df, "file_status", "Status", "By File Rate", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(rate_df.drop(columns=["file_rate"]), "file_status", "Status", "By File Rate", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Filed Lead Charge Severity-Class":
                     sevclass_df, domain, colors = _prepare_sevclass_breakdown(fld, "fld_lead_sevclass_rank", selected_period)
@@ -1671,6 +2117,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Filed Lead Charge Severity-Class", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Defendant Race":
                     race_df, domain, colors = _prepare_demographic_breakdown(fld, "def_race", selected_period)
@@ -1682,6 +2129,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Defendant Sex":
                     sex_df, domain, colors = _prepare_demographic_breakdown(fld, "def_sex", selected_period)
@@ -1693,6 +2141,20 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
+
+                elif selected_status == "Filed" and selected_detail == "By Defendant Age":
+                    age_df, median_age = _prepare_defendant_age(fld, selected_period)
+                    gt_subtitle = f"Defendant age at referral for cases filed {_in}"
+                    with st.container(border=True):
+                        st.altair_chart(
+                            _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
+                                subtitle=gt_subtitle),
+                            use_container_width=True,
+                        )
+                    with st.expander("View data table"):
+                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Referring Agency":
                     agency_df, domain, colors = _prepare_agency_breakdown(ntfld, selected_period)
@@ -1704,6 +2166,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_agency_gt(agency_df, gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Referring Lead Charge Category":
                     category_df, domain, colors = _prepare_charge_category(ntfld, selected_period, "lead_ntfld_charge_category")
@@ -1715,6 +2178,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(category_df, "category", "Category", "By Referring Lead Charge Category", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Not Filed Reason":
                     reason_df, domain, colors = _prepare_ntfld_reason(ntfld, selected_period)
@@ -1726,11 +2190,12 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(reason_df, "reason", "Reason", "By Not Filed Reason", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Re-Filing Status":
                     fld_src = FLD if FLD is not None else fld
                     refiled_df = _prepare_ntfld_refiled_status(ntfld, fld_src, selected_period)
-                    gt_subtitle = f"Whether cases not filed {_in} were eventually filed with the court"
+                    gt_subtitle = f"Cases eventually filed {_in}"
                     st.altair_chart(
                         _build_ntfld_refiled_donut(refiled_df, title="By Re-Filing Status",
                             subtitle=gt_subtitle),
@@ -1738,6 +2203,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(refiled_df, "refiled_status", "Status", "By Re-Filing Status", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Referring Lead Charge Severity-Class":
                     sevclass_df, domain, colors = _prepare_sevclass_breakdown(ntfld, "lead_ntfld_sevclass_rank", selected_period)
@@ -1749,6 +2215,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Referring Lead Charge Severity-Class", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Defendant Race":
                     race_df, domain, colors = _prepare_demographic_breakdown(ntfld, "def_race", selected_period)
@@ -1760,6 +2227,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Defendant Sex":
                     sex_df, domain, colors = _prepare_demographic_breakdown(ntfld, "def_sex", selected_period)
@@ -1771,6 +2239,20 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
+
+                elif selected_status == "Not Filed" and selected_detail == "By Defendant Age":
+                    age_df, median_age = _prepare_defendant_age(ntfld, selected_period)
+                    gt_subtitle = f"Defendant age at referral for cases not filed {_in}"
+                    with st.container(border=True):
+                        st.altair_chart(
+                            _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
+                                subtitle=gt_subtitle),
+                            use_container_width=True,
+                        )
+                    with st.expander("View data table"):
+                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Referring Agency":
                     agency_df, domain, colors = _prepare_agency_breakdown(disp, selected_period)
@@ -1782,6 +2264,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_agency_gt(agency_df, gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Disposed Lead Charge Category":
                     category_df, domain, colors = _prepare_charge_category(disp, selected_period, "lead_disp_category")
@@ -1793,10 +2276,11 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(category_df, "category", "Category", "By Disposed Lead Charge Category", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Disposition Outcome":
                     disp_outcome_df = _prepare_disp_outcome_breakdown(disp, selected_period)
-                    gt_subtitle = f"Disposition outcome breakdown for cases disposed {_in}"
+                    gt_subtitle = f"Disposition outcomes for cases disposed {_in}"
                     st.altair_chart(
                         _build_disp_outcome_breakdown_donut(disp_outcome_df, title="By Disposition Outcome",
                             subtitle=gt_subtitle),
@@ -1804,10 +2288,11 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(disp_outcome_df, "outcome_cat", "Outcome", "By Disposition Outcome", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Guilty Plea":
                     plea_df = _prepare_guilty_plea(disp, selected_period)
-                    gt_subtitle = f"Cases disposed by guilty plea vs. other outcome {_in}"
+                    gt_subtitle = f"Cases disposed by guilty plea {_in}"
                     st.altair_chart(
                         _build_guilty_plea_donut(plea_df, title="By Guilty Plea",
                             subtitle=gt_subtitle),
@@ -1815,6 +2300,43 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(plea_df, "plea_status", "Outcome", "By Guilty Plea", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
+
+                elif selected_status == "Disposed" and selected_detail == "Went to Trial":
+                    trial_df = _prepare_went_to_trial(disp, selected_period)
+                    gt_subtitle = f"Cases disposed by trial {_in}"
+                    st.altair_chart(
+                        _build_went_to_trial_donut(trial_df, title="Went to Trial",
+                            subtitle=gt_subtitle),
+                        width="stretch", height=350,
+                    )
+                    with st.expander("View data table"):
+                        great_tables(_build_simple_gt(trial_df, "trial_outcome", "Outcome", "Went to Trial", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
+
+                elif selected_status == "Disposed" and selected_detail == "By Nolle Prosequi":
+                    nolle_df, nolle_domain, nolle_colors = _prepare_nolle_prosequi(disp, selected_period)
+                    gt_subtitle = f"Cases disposed by nolle prosequi {_in}"
+                    st.altair_chart(
+                        _build_nolle_prosequi_donut(nolle_df, nolle_domain, nolle_colors, title="By Nolle Prosequi",
+                            subtitle=gt_subtitle),
+                        width="stretch", height=350,
+                    )
+                    with st.expander("View data table"):
+                        great_tables(_build_simple_gt(nolle_df, "nolle_label", "Reason", "By Nolle Prosequi", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
+
+                elif selected_status == "Disposed" and selected_detail == "By Diversion":
+                    div_df, div_domain, div_colors = _prepare_diversion(disp, selected_period)
+                    gt_subtitle = f"Cases disposed by diversion {_in}"
+                    st.altair_chart(
+                        _build_diversion_donut(div_df, div_domain, div_colors, title="By Diversion",
+                            subtitle=gt_subtitle),
+                        width="stretch", height=350,
+                    )
+                    with st.expander("View data table"):
+                        great_tables(_build_simple_gt(div_df, "diversion_desc", "Description", "By Diversion", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Disposed Lead Charge Severity-Class":
                     sevclass_df, domain, colors = _prepare_sevclass_breakdown(disp, "lead_disp_sevclass_rank", selected_period)
@@ -1826,6 +2348,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Disposed Lead Charge Severity-Class", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Defendant Race":
                     race_df, domain, colors = _prepare_demographic_breakdown(disp, "def_race", selected_period)
@@ -1837,6 +2360,7 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Defendant Sex":
                     sex_df, domain, colors = _prepare_demographic_breakdown(disp, "def_sex", selected_period)
@@ -1848,3 +2372,17 @@ def render_case_volume(
                     )
                     with st.expander("View data table"):
                         great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
+
+                elif selected_status == "Disposed" and selected_detail == "By Defendant Age":
+                    age_df, median_age = _prepare_defendant_age(disp, selected_period)
+                    gt_subtitle = f"Defendant age at referral for cases disposed {_in}"
+                    with st.container(border=True):
+                        st.altair_chart(
+                            _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
+                                subtitle=gt_subtitle),
+                            use_container_width=True,
+                        )
+                    with st.expander("View data table"):
+                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
+                    _render_notes(selected_status, selected_detail)
