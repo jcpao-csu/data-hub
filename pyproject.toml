@@ -6,10 +6,19 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "cloudinary>=1.44.1",
+    "folium>=0.20.0",
+    "geopandas>=1.0.0",
+    "great-tables>=0.21.0",
+    "jupyter>=1.1.1",
     "pandas>=2.3.3",
     "psycopg2>=2.9.11",
     "psycopg2-binary>=2.9.11",
     "python-dotenv>=1.2.2",
+    "pyyaml>=6.0.3",
     "sqlalchemy>=2.0.48",
+    "streamlit-extras>=1.0.0",
+    "streamlit-folium>=0.27.0",
     "streamlit[charts,pdf]>=1.55.0",
+    "tabulate>=0.10.0",
+    "vl-convert-python>=1.9.0.post1",
 ]
