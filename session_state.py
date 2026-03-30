@@ -30,11 +30,11 @@ from read_data import RCVD, FLD, NTFLD, DISP, AGENCIES, MSHP_CODES
 _DATA_START = date(2016, 1, 1)
 
 _PERIOD_OPTIONS: dict[str, str] = {
-    "Y": "Annually", # by year
+    "M": "Monthly",   # by month — first so form default is Monthly, not Annually
     "Q": "Quarterly", # by quarter
-    "M": "Monthly", # by month
-    "W": "Weekly", # by week
-    "D": "Daily", # by day
+    "Y": "Annually",  # by year
+    # "W": "Weekly", # by week — disabled until granularity guard is refined
+    # "D": "Daily",  # by day   — disabled until granularity guard is refined
 }
 
 _AGENCY_OPTIONS: dict[str, str] = {
@@ -99,7 +99,7 @@ def _default_date_range() -> tuple[date, date]:
 
 _FILTER_DEFAULTS: dict = {
     "date_range_filter": _default_date_range,   # callable — evaluated at init time
-    "period_freq_filter": "Y",
+    "period_freq_filter": "M",
     "charge_category_filter": "All",
     "police_agency_filter": "All",
     "def_race_filter": "All",
@@ -127,7 +127,7 @@ def _apply_date_filter(df: pd.DataFrame, date_col: str) -> pd.DataFrame:
     # Guard: st.date_input returns a 1-tuple while user is mid-selection
     if not isinstance(date_range, (tuple, list)) or len(date_range) != 2:
         # return df
-        st.warning("Incomplete date range. Please select a start and end date to filter the dashboard.")
+        st.warning("⚠️ Incomplete date range. Please select a start and end date to filter the dashboard.")
         st.stop()
 
     start, end = date_range
@@ -176,6 +176,28 @@ def _apply_shared_filters(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _validate_period_granularity() -> None:
+    """
+    Guard against period granularity being too fine for the selected date range.
+    Weekly view is limited to 52 periods; daily view to 366 periods.
+    Call this at the top of get_filtered_data() before any filtering runs.
+    """
+    date_range = st.session_state["date_range_filter"]
+    if not isinstance(date_range, (tuple, list)) or len(date_range) != 2:
+        st.warning("Incomplete date range. Please select a start and end date to filter the dashboard.")
+        st.stop()
+    start, end = date_range
+    freq = st.session_state["period_freq_filter"]
+    full_index = pd.period_range(start=start, end=end, freq=freq)
+
+    if (freq == "W" and len(full_index) > 52) or (freq == "D" and len(full_index) > 366):
+        st.warning(
+            "Period granularity is too fine for the selected date range. "
+            "Try switching to Monthly or Quarterly."
+        )
+        st.stop()
+
+
 def get_filtered_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Return (RCVD, FLD, NTFLD, DISP) filtered and annotated per the current
@@ -187,12 +209,14 @@ def get_filtered_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Da
 
     Each returned dataframe includes a 'period' column for use in Altair charts.
     """
+    _validate_period_granularity()
+
     # Each table has a different primary date column
     table_configs = [
-        (RCVD,  "ref_date"), # load_rcvd()
-        (FLD,   "earliest_fld_date"), # load_fld()
-        (NTFLD, "earliest_ntfld_date"), # load_ntfld()
-        (DISP,  "earliest_disp_date"), # load_disp()
+        (RCVD,  "ref_date"),
+        (FLD,   "earliest_fld_date"),
+        (NTFLD, "earliest_ntfld_date"),
+        (DISP,  "earliest_disp_date"),
     ]
 
     results = []
@@ -244,8 +268,7 @@ def render_sidebar(
 
             # -- Date range --
             st.date_input(
-                _label("Date Range", "📆"),
-                value=st.session_state["date_range_filter"],
+                _label("Date Range¹", "📆"),
                 min_value=_DATA_START,
                 max_value=date.today(),
                 format="MM/DD/YYYY",
@@ -259,9 +282,6 @@ def render_sidebar(
                 _label("Period View", "⏳"),
                 options=list(_PERIOD_OPTIONS.keys()),
                 format_func=lambda x: _PERIOD_OPTIONS[x],
-                index=list(_PERIOD_OPTIONS.keys()).index(
-                    st.session_state["period_freq_filter"]
-                ),
                 key="period_freq_filter",
                 help="View by selected time granularity (e.g. annually, monthly).",
                 disabled=period_freq_disabled,
@@ -269,11 +289,8 @@ def render_sidebar(
 
             # -- Charge category --
             st.selectbox(
-                _label("Charge Code Category^", "📖"),
+                _label("Charge Code Category²", "📖"),
                 options=_CHARGE_CATEGORIES,
-                index=_CHARGE_CATEGORIES.index(
-                    st.session_state["charge_category_filter"]
-                ),
                 key="charge_category_filter",
                 help="View cases containing at least one charge under the selected category.",
                 disabled=charge_category_disabled,
@@ -284,9 +301,6 @@ def render_sidebar(
                 _label("Referring Police Agency", "🚔"),
                 options=list(_AGENCY_OPTIONS.keys()),
                 format_func=lambda x: _AGENCY_OPTIONS[x],
-                index=list(_AGENCY_OPTIONS.keys()).index(
-                    st.session_state["police_agency_filter"]
-                ),
                 key="police_agency_filter",
                 help="View cases referred by the selected police agency.",
                 disabled=police_agency_disabled,
@@ -297,9 +311,6 @@ def render_sidebar(
                 _label("Defendant Race", "👤"),
                 options=list(_RACE_OPTIONS.keys()),
                 format_func=lambda x: _RACE_OPTIONS[x],
-                index=list(_RACE_OPTIONS.keys()).index(
-                    st.session_state["def_race_filter"]
-                ),
                 key="def_race_filter",
                 help="View cases where the suspect/defendant matches the selected race.",
                 disabled=def_race_disabled,
@@ -310,9 +321,6 @@ def render_sidebar(
                 _label("Defendant Sex", "🚻"),
                 options=list(_SEX_OPTIONS.keys()),
                 format_func=lambda x: _SEX_OPTIONS[x],
-                index=list(_SEX_OPTIONS.keys()).index(
-                    st.session_state["def_sex_filter"]
-                ),
                 key="def_sex_filter",
                 help="View cases where the suspect/defendant matches the selected sex.",
                 disabled=def_sex_disabled,
@@ -341,8 +349,13 @@ def render_sidebar(
     st.divider()
 
     st.caption(
-        "^ Charge codes are manually grouped into categories established by the JCPAO, "
+        "<sup>1</sup> Available dashboard data begins January 2016",
+        unsafe_allow_html=True
+    )
+    st.caption(
+        "<sup>2</sup> Charge codes are manually grouped into categories established by the JCPAO, "
         "derived in part from the National Crime Information Center (NCIC) classification "
         "system maintained by the FBI and adopted by the Missouri State Highway Patrol. "
-        "[Reference](https://www.mshp.dps.missouri.gov/CJ08Client/Home/ChargeCode)"
+        "[Reference](https://www.mshp.dps.missouri.gov/CJ08Client/Home/ChargeCode)",
+        unsafe_allow_html=True
     )

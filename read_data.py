@@ -41,7 +41,7 @@ except Exception as e:
     st.stop()
 
 # SQLALCHEMY: Read tables from NeonDB
-@st.cache_data(ttl=3600, show_spinner="Loading data, please wait...")
+@st.cache_data(show_spinner="Loading data, please wait...") # ttl=3600*24*7, 
 def query_table(sql_query: str, _engine: Engine = engine) -> pd.DataFrame:
     if _engine is None:
         return pd.DataFrame()
@@ -59,7 +59,7 @@ def query_table(sql_query: str, _engine: Engine = engine) -> pd.DataFrame:
 
 
 # --- Filter FLD pbk_num from NTFLD df ---
-@st.cache_data(ttl=3600, show_spinner="Loading data, please wait...")
+@st.cache_data(show_spinner="Loading data, please wait...") # ttl=3600*24*7
 def filter_ntfld(ntfld: pd.DataFrame, fld: pd.DataFrame) -> pd.DataFrame:
     fld_cases = fld['pbk_num'].unique().tolist()
     return ntfld[~ntfld['pbk_num'].isin(fld_cases)]
@@ -74,3 +74,8 @@ DISP = query_table("SELECT * FROM karpel_disp")
 
 AGENCIES = query_table("SELECT * FROM agencies")
 MSHP_CODES = query_table("SELECT * FROM mshp_charge_codes")
+POLICE_REPORTS = query_table("SELECT * FROM police_reports")
+
+# Return static dataframes (for use in other pages)
+def get_dataframes():
+    return RCVD, FLD, NTFLD, DISP, MSHP_CODES, AGENCIES
