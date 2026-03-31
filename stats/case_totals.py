@@ -148,7 +148,7 @@ def render_case_totals(
                 value=f"{total:,} cases",
                 delta=delta_str,
                 delta_color=d_color,
-                height=180,
+                # height=180,
                 chart_data=data["sparkline"],
                 chart_type="area"
             )
