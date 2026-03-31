@@ -284,14 +284,14 @@ def render_def_zipcode(rcvd: pd.DataFrame) -> None:
         with col_map:
             st_folium(
                 _build_def_zipcode_map(counts, gdf, jc_boundary, demarcations),
-                width="container",
+                # width="stretch",
                 height=520,
                 returned_objects=[],
             )
         with col_table:
             st.dataframe(
                 table,
-                width="container",
+                # width="stretch",
                 height=520,
                 hide_index=True,
                 column_config={

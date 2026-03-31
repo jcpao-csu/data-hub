@@ -183,7 +183,7 @@ with st.container():
     tab_bar, tab_line = st.tabs(["Bar Chart", "Line Chart"])
 
     with tab_bar:
-        st.altair_chart(_bar_chart(sd_df, y_field, y_title), width="container")
+        st.altair_chart(_bar_chart(sd_df, y_field, y_title))
 
     with tab_line:
-        st.altair_chart(_line_chart(sd_df, y_field, y_title), width="container")
+        st.altair_chart(_line_chart(sd_df, y_field, y_title))

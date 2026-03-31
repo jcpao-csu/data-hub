@@ -19,7 +19,7 @@ with cols[1]:
     st.image(
         press_conf_still,
         caption="Prosecuting Attorney Melesa Johnson giving remarks at the October 14, 2025 DV Press Conference",
-        width="stretch"
+        # width="stretch"
     )
 
     with st.expander("Read Letter", expanded=False, icon="📄"):
@@ -28,7 +28,7 @@ with cols[1]:
         st.image(
             letter_image,
             caption="Prosecuting Attorney Melesa Johnson's Letter from January 14, 2025",
-            width="stretch"
+            # width="stretch"
         )
 
     with st.expander("View Press Conference", expanded=False, icon="▶️"):
@@ -37,7 +37,7 @@ with cols[1]:
             youtube_url,
             autoplay=False,
             muted=False,
-            width="stretch"
+            # width="stretch"
         )
 
     # st.pdf not working?

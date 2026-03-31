@@ -8,6 +8,7 @@ from stats.rcvd_volume import (
     render_rcvd_status,
     render_under_review,
 )
+from stats.rcvd_heatmap import render_rcvd_heatmap                                                       
 from stats.rcvd_sankey import render_rcvd_sankey
 
 RCVD, FLD, NTFLD, DISP, MSHP_CODES, AGENCIES = get_dataframes()
@@ -23,6 +24,7 @@ st.divider()
 
 rcvd, fld, ntfld, disp = get_filtered_data()
 
+render_rcvd_heatmap(RCVD)   
 render_rcvd_status_metrics(rcvd, FLD, NTFLD)
 render_rcvd_volume(rcvd)
 render_rcvd_sankey(rcvd, FLD, NTFLD, DISP)

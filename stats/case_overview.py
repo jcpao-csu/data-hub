@@ -374,7 +374,7 @@ def _build_review_status_donut(df: pd.DataFrame, title: str = "", subtitle: str 
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -445,7 +445,7 @@ def _build_arrest_status_donut(df: pd.DataFrame, title: str = "", subtitle: str 
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -553,7 +553,7 @@ def _build_defendant_age_bar(
         chart = chart + median_text
 
     return chart.properties(
-        width="container",
+        # width="stretch",
         height=420,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -636,7 +636,7 @@ def _build_demographic_donut(
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -726,7 +726,7 @@ def _build_sevclass_donut(
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -793,7 +793,7 @@ def _build_charge_severity_donut(df: pd.DataFrame, title: str = "", subtitle: st
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -879,7 +879,7 @@ def _build_charge_category_donut(
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -952,7 +952,7 @@ def _build_open_case_status_donut(df: pd.DataFrame, title: str = "", subtitle: s
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1042,7 +1042,7 @@ def _build_file_rate_donut(df: pd.DataFrame, title: str = "", subtitle: str = ""
     )
 
     return (arc + center_rate + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1115,7 +1115,7 @@ def _build_ntfld_refiled_donut(df: pd.DataFrame, title: str = "", subtitle: str 
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1204,7 +1204,7 @@ def _build_disp_outcome_breakdown_donut(df: pd.DataFrame, title: str = "", subti
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1277,7 +1277,7 @@ def _build_guilty_plea_donut(df: pd.DataFrame, title: str = "", subtitle: str = 
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1357,7 +1357,7 @@ def _build_went_to_trial_donut(df: pd.DataFrame, title: str = "", subtitle: str 
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1448,7 +1448,7 @@ def _build_nolle_prosequi_donut(
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1534,7 +1534,7 @@ def _build_diversion_donut(
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1619,7 +1619,7 @@ def _build_ntfld_reason_donut(
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1691,7 +1691,7 @@ def _build_disp_outcome_donut(df: pd.DataFrame, title: str = "", subtitle: str =
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1736,7 +1736,7 @@ def _build_single_volume_bar(df: pd.DataFrame, color: str, title: str = "", subt
         chart = bars + labels
 
     return chart.properties(
-        width="container",
+        # width="stretch",
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
 
@@ -1785,7 +1785,7 @@ def _build_agency_donut(
     )
 
     return (arc + center_total + center_sub).properties(
-        width="container",
+        # width="stretch",
         height=315,
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
@@ -1919,12 +1919,12 @@ def render_case_volume(
         with st.container(border=True):
             event = st.altair_chart(
                 _build_single_volume_bar(df, color, title=f"Cases {selected_status}", subtitle=subtitle),
-                width="stretch",
+                # width="content",
                 height=350,
                 on_select="rerun",
             )
             with st.expander("View data table"):
-                great_tables(_build_volume_gt(df, selected_status, subtitle), width="stretch")
+                great_tables(_build_volume_gt(df, selected_status, subtitle))
 
     with col_right:
         click_items     = event.selection.get("click_sel", [])
@@ -1962,10 +1962,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_agency_donut(agency_df, domain, colors, title="By Referring Agency",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_agency_gt(agency_df, gt_subtitle), width="stretch")
+                        great_tables(_build_agency_gt(agency_df, gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Review Status":
@@ -1976,10 +1976,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_review_status_donut(review_df, title="By Review Status",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(review_df, "status", "Status", "By Review Status", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(review_df, "status", "Status", "By Review Status", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Arrest Status":
@@ -1988,10 +1988,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_arrest_status_donut(arrest_df, title="By Arrest Status",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(arrest_df, "arrest_status", "Status", "By Arrest Status", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(arrest_df, "arrest_status", "Status", "By Arrest Status", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Referring Lead Charge Category":
@@ -2000,10 +2000,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_charge_category_donut(category_df, domain, colors, title="By Referring Lead Charge Category",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(category_df, "category", "Category", "By Referring Lead Charge Category", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(category_df, "category", "Category", "By Referring Lead Charge Category", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Referring Lead Charge Severity-Class":
@@ -2012,10 +2012,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_sevclass_donut(sevclass_df, domain, colors, title="By Referring Lead Charge Severity-Class",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Referring Lead Charge Severity-Class", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Referring Lead Charge Severity-Class", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Defendant Race":
@@ -2024,10 +2024,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_demographic_donut(race_df, "def_race", domain, colors, title="By Defendant Race",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Defendant Sex":
@@ -2036,10 +2036,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_demographic_donut(sex_df, "def_sex", domain, colors, title="By Defendant Sex",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Received" and selected_detail == "By Defendant Age":
@@ -2049,10 +2049,10 @@ def render_case_volume(
                         st.altair_chart(
                             _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
                                 subtitle=gt_subtitle),
-                            width="container",
+                            # width="stretch",
                         )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Referring Agency":
@@ -2061,10 +2061,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_agency_donut(agency_df, domain, colors, title="By Referring Agency",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_agency_gt(agency_df, gt_subtitle), width="stretch")
+                        great_tables(_build_agency_gt(agency_df, gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Filed Lead Charge Category":
@@ -2073,10 +2073,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_charge_category_donut(category_df, domain, colors, title="By Filed Lead Charge Category",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(category_df, "category", "Category", "By Filed Lead Charge Category", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(category_df, "category", "Category", "By Filed Lead Charge Category", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Open Case Status":
@@ -2086,10 +2086,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_open_case_status_donut(open_df, title="By Open Case Status",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(open_df, "open_status", "Status", "By Open Case Status", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(open_df, "open_status", "Status", "By Open Case Status", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By File Rate":
@@ -2101,10 +2101,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_file_rate_donut(rate_df, title="By File Rate",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(rate_df.drop(columns=["file_rate"]), "file_status", "Status", "By File Rate", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(rate_df.drop(columns=["file_rate"]), "file_status", "Status", "By File Rate", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Filed Lead Charge Severity-Class":
@@ -2113,10 +2113,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_sevclass_donut(sevclass_df, domain, colors, title="By Filed Lead Charge Severity-Class",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Filed Lead Charge Severity-Class", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Filed Lead Charge Severity-Class", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Defendant Race":
@@ -2125,10 +2125,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_demographic_donut(race_df, "def_race", domain, colors, title="By Defendant Race",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Defendant Sex":
@@ -2137,10 +2137,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_demographic_donut(sex_df, "def_sex", domain, colors, title="By Defendant Sex",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Filed" and selected_detail == "By Defendant Age":
@@ -2150,10 +2150,10 @@ def render_case_volume(
                         st.altair_chart(
                             _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
                                 subtitle=gt_subtitle),
-                            width="container",
+                            # width="stretch",
                         )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Referring Agency":
@@ -2162,10 +2162,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_agency_donut(agency_df, domain, colors, title="By Referring Agency",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_agency_gt(agency_df, gt_subtitle), width="stretch")
+                        great_tables(_build_agency_gt(agency_df, gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Referring Lead Charge Category":
@@ -2174,10 +2174,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_charge_category_donut(category_df, domain, colors, title="By Referring Lead Charge Category",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(category_df, "category", "Category", "By Referring Lead Charge Category", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(category_df, "category", "Category", "By Referring Lead Charge Category", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Not Filed Reason":
@@ -2186,10 +2186,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_ntfld_reason_donut(reason_df, domain, colors, title="By Not Filed Reason",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(reason_df, "reason", "Reason", "By Not Filed Reason", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(reason_df, "reason", "Reason", "By Not Filed Reason", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Re-Filing Status":
@@ -2199,10 +2199,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_ntfld_refiled_donut(refiled_df, title="By Re-Filing Status",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(refiled_df, "refiled_status", "Status", "By Re-Filing Status", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(refiled_df, "refiled_status", "Status", "By Re-Filing Status", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Referring Lead Charge Severity-Class":
@@ -2211,10 +2211,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_sevclass_donut(sevclass_df, domain, colors, title="By Referring Lead Charge Severity-Class",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Referring Lead Charge Severity-Class", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Referring Lead Charge Severity-Class", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Defendant Race":
@@ -2223,10 +2223,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_demographic_donut(race_df, "def_race", domain, colors, title="By Defendant Race",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Defendant Sex":
@@ -2235,10 +2235,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_demographic_donut(sex_df, "def_sex", domain, colors, title="By Defendant Sex",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Not Filed" and selected_detail == "By Defendant Age":
@@ -2248,10 +2248,10 @@ def render_case_volume(
                         st.altair_chart(
                             _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
                                 subtitle=gt_subtitle),
-                            width="container",
+                            # width="stretch",
                         )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Referring Agency":
@@ -2260,10 +2260,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_agency_donut(agency_df, domain, colors, title="By Referring Agency",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_agency_gt(agency_df, gt_subtitle), width="stretch")
+                        great_tables(_build_agency_gt(agency_df, gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Disposed Lead Charge Category":
@@ -2272,10 +2272,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_charge_category_donut(category_df, domain, colors, title="By Disposed Lead Charge Category",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(category_df, "category", "Category", "By Disposed Lead Charge Category", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(category_df, "category", "Category", "By Disposed Lead Charge Category", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Disposition Outcome":
@@ -2284,10 +2284,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_disp_outcome_breakdown_donut(disp_outcome_df, title="By Disposition Outcome",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(disp_outcome_df, "outcome_cat", "Outcome", "By Disposition Outcome", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(disp_outcome_df, "outcome_cat", "Outcome", "By Disposition Outcome", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Guilty Plea":
@@ -2296,10 +2296,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_guilty_plea_donut(plea_df, title="By Guilty Plea",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(plea_df, "plea_status", "Outcome", "By Guilty Plea", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(plea_df, "plea_status", "Outcome", "By Guilty Plea", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "Went to Trial":
@@ -2308,10 +2308,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_went_to_trial_donut(trial_df, title="Went to Trial",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(trial_df, "trial_outcome", "Outcome", "Went to Trial", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(trial_df, "trial_outcome", "Outcome", "Went to Trial", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Nolle Prosequi":
@@ -2320,10 +2320,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_nolle_prosequi_donut(nolle_df, nolle_domain, nolle_colors, title="By Nolle Prosequi",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(nolle_df, "nolle_label", "Reason", "By Nolle Prosequi", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(nolle_df, "nolle_label", "Reason", "By Nolle Prosequi", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Diversion":
@@ -2332,10 +2332,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_diversion_donut(div_df, div_domain, div_colors, title="By Diversion",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(div_df, "diversion_desc", "Description", "By Diversion", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(div_df, "diversion_desc", "Description", "By Diversion", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Disposed Lead Charge Severity-Class":
@@ -2344,10 +2344,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_sevclass_donut(sevclass_df, domain, colors, title="By Disposed Lead Charge Severity-Class",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Disposed Lead Charge Severity-Class", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(sevclass_df[["sevclass", "count", "pct"]], "sevclass", "Severity / Class", "By Disposed Lead Charge Severity-Class", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Defendant Race":
@@ -2356,10 +2356,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_demographic_donut(race_df, "def_race", domain, colors, title="By Defendant Race",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(race_df, "def_race", "Race", "By Defendant Race", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Defendant Sex":
@@ -2368,10 +2368,10 @@ def render_case_volume(
                     st.altair_chart(
                         _build_demographic_donut(sex_df, "def_sex", domain, colors, title="By Defendant Sex",
                             subtitle=gt_subtitle),
-                        width="stretch", height=350,
+                        height=350,
                     )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(sex_df, "def_sex", "Sex", "By Defendant Sex", gt_subtitle))
                     _render_notes(selected_status, selected_detail)
 
                 elif selected_status == "Disposed" and selected_detail == "By Defendant Age":
@@ -2381,8 +2381,8 @@ def render_case_volume(
                         st.altair_chart(
                             _build_defendant_age_bar(age_df, median_age, title="By Defendant Age",
                                 subtitle=gt_subtitle),
-                            width="container",
+                            # width="stretch",
                         )
                     with st.expander("View data table"):
-                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle), width="stretch")
+                        great_tables(_build_simple_gt(age_df, "age_group", "Age Group", "By Defendant Age", gt_subtitle))
                     _render_notes(selected_status, selected_detail)

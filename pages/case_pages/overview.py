@@ -185,11 +185,11 @@ year_chart = (
             fontSize=18,
             fontWeight="bold",
         ),
-        width="container",
+        # width="stretch",
     )
 )
 
-st.altair_chart(year_chart, width="container")
+st.altair_chart(year_chart)
 
 # ---------------------------------------------------------------------------
 # Cases by Referring Agency (Top 10, current year YTD)
@@ -274,11 +274,11 @@ agency_chart = (
             fontSize=18,
             fontWeight="bold",
         ),
-        width="container",
+        # width="stretch",
     )
 )
 
-st.altair_chart(agency_chart, width="container")
+st.altair_chart(agency_chart)
 
 # ---------------------------------------------------------------------------
 # Filing rate formula

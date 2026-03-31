@@ -217,11 +217,11 @@ def render_ntfld_refiled(ntfld: pd.DataFrame, fld_all: pd.DataFrame) -> None:
 
         tab_count, tab_pct, tab_rate = st.tabs(["Count", "Normalized (%)", "Rate (%)"])
         with tab_count:
-            st.altair_chart(_build_refiled_bar(melted, is_normalized=False), width="container")
+            st.altair_chart(_build_refiled_bar(melted, is_normalized=False))
         with tab_pct:
-            st.altair_chart(_build_refiled_bar(melted, is_normalized=True), width="container")
+            st.altair_chart(_build_refiled_bar(melted, is_normalized=True))
         with tab_rate:
-            st.altair_chart(_build_refiled_line(wide), width="container")
+            st.altair_chart(_build_refiled_line(wide))
 
         st.divider()
         st.subheader("Re-Filing Rate by Reason")
@@ -229,4 +229,4 @@ def render_ntfld_refiled(ntfld: pd.DataFrame, fld_all: pd.DataFrame) -> None:
             "Of cases not filed for each reason, what share were later filed with the court? "
             "Sorted so the highest re-filing rates appear at the top."
         )
-        st.altair_chart(_build_refiled_by_reason(reason_df), width="container")
+        st.altair_chart(_build_refiled_by_reason(reason_df))

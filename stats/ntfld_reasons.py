@@ -140,12 +140,12 @@ def render_ntfld_reasons(ntfld: pd.DataFrame) -> None:
         with tab_count:
             st.altair_chart(
                 _build_ntfld_reasons_bar(df, category_order, is_normalized=False),
-                width="container",
+                # width="stretch",
             )
         with tab_pct:
             st.altair_chart(
                 _build_ntfld_reasons_bar(df, category_order, is_normalized=True),
-                width="container",
+                # width="stretch",
             )
 
 
@@ -316,4 +316,4 @@ def render_ntfld_treemap(ntfld: pd.DataFrame) -> None:
             "and :red[Unresolved] (evidence / suppression / other). "
             "Click any tile to drill down; click the path bar to navigate back up."
         )
-        st.plotly_chart(_build_ntfld_treemap(df, total), width="container")
+        st.plotly_chart(_build_ntfld_treemap(df, total))

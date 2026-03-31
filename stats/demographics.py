@@ -77,7 +77,7 @@ def render_demo_composition(rcvd: pd.DataFrame) -> None:
             "Note: without population-level comparison data, raw counts alone do not indicate "
             "disparity — use the filing rate and disposition charts for that analysis."
         )
-        st.altair_chart(_build_demo_composition_bar(df), width="container")
+        st.altair_chart(_build_demo_composition_bar(df))
 
 
 # --- render_demo_filing_rate ---
@@ -178,7 +178,7 @@ def render_demo_filing_rate(fld: pd.DataFrame, ntfld: pd.DataFrame) -> None:
             "Investigation). The dashed line marks the overall average filing rate. "
             "Races with fewer cases may show more volatile rates."
         )
-        st.altair_chart(_build_demo_filing_rate_bar(df, overall_rate), width="container")
+        st.altair_chart(_build_demo_filing_rate_bar(df, overall_rate))
 
 
 # --- render_demo_disp_outcomes ---
@@ -280,7 +280,7 @@ def render_demo_disp_outcomes(disp: pd.DataFrame) -> None:
             "split into :blue[Resolved], :orange[Pending], and :darkred[Unresolved]. "
             "Click a legend category to highlight it."
         )
-        st.altair_chart(_build_demo_disp_outcomes_bar(df, race_sort), width="container")
+        st.altair_chart(_build_demo_disp_outcomes_bar(df, race_sort))
 
 
 # --- render_demo_vs_census ---
@@ -476,12 +476,12 @@ def render_demo_vs_census(
         with tab_compare:
             st.altair_chart(
                 _build_census_comparison_bar(long_df, sort_order),
-                width="container",
+                # width="stretch",
             )
         with tab_disparity:
             st.altair_chart(
                 _build_census_disparity_bar(ratio_df, sort_order),
-                width="container",
+                # width="stretch",
             )
 
 
@@ -548,7 +548,7 @@ def render_census_trend(census_all: pd.DataFrame) -> None:
             "rolling estimates, so adjacent years are not fully independent. Click a year in "
             "the legend to isolate it."
         )
-        st.altair_chart(_build_census_trend_bar(df), width="container")
+        st.altair_chart(_build_census_trend_bar(df))
 
 
 # --- render_county_composition ---
@@ -638,4 +638,4 @@ def render_county_composition() -> None:
             st.warning(f"ACS {selected_year} data could not be loaded.", icon=":material/cloud_off:")
             return
 
-        st.plotly_chart(_build_county_donut(census_df), width="container")
+        st.plotly_chart(_build_county_donut(census_df))

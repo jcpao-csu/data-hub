@@ -175,4 +175,4 @@ def render_rcvd_sankey(
             "The received set responds to sidebar filters; outcomes (filed, not filed, disposed) "
             "are looked up from all available data regardless of the date range filter."
         )
-        st.plotly_chart(_build_rcvd_sankey(counts), width="container")
+        st.plotly_chart(_build_rcvd_sankey(counts))

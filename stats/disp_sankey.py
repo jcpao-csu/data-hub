@@ -228,4 +228,4 @@ def render_disp_sankey(disp: pd.DataFrame) -> None:
             "reflect convictions; :red[Trial Not Guilty] reflects acquittals; Nolle Prosequi "
             "cases are split into :blue[Resolved], :orange[Pending], and :darkred[Unresolved]."
         )
-        st.plotly_chart(_build_disp_sankey(data), width="container")
+        st.plotly_chart(_build_disp_sankey(data))

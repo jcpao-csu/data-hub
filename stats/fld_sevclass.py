@@ -168,10 +168,10 @@ def render_fld_sevclass(fld: pd.DataFrame) -> None:
         with tab_stacked:
             st.altair_chart(
                 _build_fld_sevclass_area(df, domain, colors, True),
-                width="container",
+                # width="stretch",
             )
         with tab_normalized:
             st.altair_chart(
                 _build_fld_sevclass_area(df, domain, colors, "normalize"),
-                width="container",
+                # width="stretch",
             )

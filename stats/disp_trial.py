@@ -98,4 +98,4 @@ def render_trial_verdicts(disp: pd.DataFrame) -> None:
             f":green-background[**{n_guilty:,} of {trials_total:,} trial cases "
             f"({pct:.1f}%) resulted in a guilty verdict** during the selected period.]"
         )
-        st.altair_chart(_build_trial_verdict_pie(df), width="container")
+        st.altair_chart(_build_trial_verdict_pie(df))

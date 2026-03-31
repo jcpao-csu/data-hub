@@ -75,6 +75,6 @@ def render_ntfld_volume(ntfld: pd.DataFrame) -> None:
         st.header(":material/block: Cases Not Filed")
         tab_bar, tab_line = st.tabs(["Bar Chart", "Line Chart"])
         with tab_bar:
-            st.altair_chart(_build_ntfld_volume_bar(df, title="Cases Not Filed", subtitle=subtitle), width="container")
+            st.altair_chart(_build_ntfld_volume_bar(df, title="Cases Not Filed", subtitle=subtitle))
         with tab_line:
-            st.altair_chart(_build_ntfld_volume_line(df), width="container")
+            st.altair_chart(_build_ntfld_volume_line(df))

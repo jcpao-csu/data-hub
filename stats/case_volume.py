@@ -141,6 +141,6 @@ def render_case_volume(
 
         tab_line, tab_bar = st.tabs(["Line Chart", "Bar Chart"])
         with tab_line:
-            st.altair_chart(_build_case_volume_line(df), width="container")
+            st.altair_chart(_build_case_volume_line(df))
         with tab_bar:
-            st.altair_chart(_build_case_volume_bar(df), width="container")
+            st.altair_chart(_build_case_volume_bar(df))

@@ -62,7 +62,7 @@ with st.sidebar:
                 ":blue-background[:blue[**Active Charge Codes Only**] 🚔]",
                 key="glossary_legacy",
                 help="Filter to only charge codes that are currently active.",
-                width="stretch",
+                # width="stretch",
             )
 
             st.multiselect(
@@ -73,7 +73,7 @@ with st.sidebar:
                 help="Select up to five charge code categories.",
                 max_selections=5,
                 placeholder="All",
-                width="stretch",
+                # width="stretch",
             )
 
             st.selectbox(
@@ -82,7 +82,7 @@ with st.sidebar:
                 format_func=lambda x: _SEV_OPTIONS[x],
                 key="glossary_severity",
                 help="Filter charge codes by severity.",
-                width="stretch",
+                # width="stretch",
             )
 
             st.form_submit_button(
@@ -90,7 +90,7 @@ with st.sidebar:
                 icon=":material/filter_alt:",
                 type="primary",
                 on_click=_update_df,
-                width="container",
+                # width="stretch",
             )
 
     st.button(
@@ -98,7 +98,7 @@ with st.sidebar:
         on_click=_reset_filters,
         type="secondary",
         icon="🔄",
-        width="container",
+        # width="stretch",
         help="Restore all filters to their default values.",
     )
 
@@ -118,7 +118,7 @@ _DISPLAY_COLS = ["charge_code", "short_desc", "long_desc", "severity", "class", 
 st.info(f"Displaying {len(st.session_state['glossary_df']):,} charge codes based on current filter selections", icon=":material/info:")
 st.dataframe(
     data=st.session_state["glossary_df"][_DISPLAY_COLS],
-    width="container",
+    # width="stretch",
     height=1000,
     hide_index=True,
 )

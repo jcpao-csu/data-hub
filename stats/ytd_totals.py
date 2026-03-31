@@ -126,7 +126,7 @@ def render_ytd_metric(
                 chart_type="area",
                 border=True,
             )
-            great_tables(_build_gt_table(table_data, table_name), width="stretch")
+            great_tables(_build_gt_table(table_data, table_name))
 
     style_metric_cards(
         background_color="#0d1b2a",

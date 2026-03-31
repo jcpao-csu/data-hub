@@ -174,15 +174,15 @@ def render_rcvd_by_agency(rcvd: pd.DataFrame) -> None:
         with tab_line:
             st.altair_chart(
                 _build_rcvd_by_agency_line(df, domain, colors),
-                width="container",
+                # width="stretch",
             )
         with tab_stacked:
             st.altair_chart(
                 _build_rcvd_by_agency_area(df, domain, colors, True),
-                width="container",
+                # width="stretch",
             )
         with tab_normalized:
             st.altair_chart(
                 _build_rcvd_by_agency_area(df, domain, colors, "normalize"),
-                width="container",
+                # width="stretch",
             )

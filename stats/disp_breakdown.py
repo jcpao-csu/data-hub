@@ -119,4 +119,4 @@ def render_disp_breakdown(disp: pd.DataFrame) -> None:
         y_field = "count" if view_mode == "Count" else "pct"
         y_title = "Cases" if view_mode == "Count" else "% of Disposed Cases"
 
-        st.altair_chart(_build_disp_breakdown_bar(df, y_field, y_title), width="container")
+        st.altair_chart(_build_disp_breakdown_bar(df, y_field, y_title))

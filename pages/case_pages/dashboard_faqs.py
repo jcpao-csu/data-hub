@@ -76,7 +76,7 @@ def cases_rcvd(rcvd: pd.DataFrame = rcvd):
             y=alt.Y("total_cases:Q", title="Total Cases Received"),
             tooltip=["period", "total_cases"],
         )
-        # .properties(title="Cases Received by Period", width="container")
+        # .properties(title="Cases Received by Period")
     )
 
     # Output
@@ -85,7 +85,7 @@ def cases_rcvd(rcvd: pd.DataFrame = rcvd):
     # st.badge() #  # PPI # Justice Counts # Measures for Justice | # View-only 
     # st.divider()
     # st.markdown()
-    st.altair_chart(chart, width="container")
+    st.altair_chart(chart)
     # st.write_stream("hello...")
 
 # Status of Received cases
@@ -171,14 +171,14 @@ def rcvd_cases_status(rcvd: pd.DataFrame = rcvd, fld: pd.DataFrame = fld, ntfld:
         )
         .properties(
             title="Status of Cases Received by Period" + (" (Normalized)" if is_normalized else ""),
-            width="container",
+            # width="stretch",
         )
     )
 
     # Output
     st.header("📁 Current Status of Cases Received")
     st.caption("Of the cases referred by law enforcement agencies to the prosecuting attorney's office, where along the prosecution process are they?")
-    st.altair_chart(chart, width="container")
+    st.altair_chart(chart)
 
 
 # Case file rate = # cases filed / (# cases completed review-> filed+ntfld)
@@ -237,13 +237,13 @@ def file_rate(fld: pd.DataFrame = fld, ntfld: pd.DataFrame = ntfld):
 
     chart = (
         (line + points)
-        .properties(title="Case Filing Rate by Period", width="container")
+        .properties(title="Case Filing Rate by Period")
     )
 
     # Output
     st.header("📁 Filing Rate")
     st.caption("Of the cases that have completed review, what % have been filed with the court?")
-    st.altair_chart(chart, width="container")
+    st.altair_chart(chart)
 
 # Review time (avg/median; file vs not file)
 def decision_time(rcvd: pd.DataFrame = rcvd, fld: pd.DataFrame = fld, ntfld: pd.DataFrame = ntfld):
@@ -321,12 +321,12 @@ def decision_time(rcvd: pd.DataFrame = rcvd, fld: pd.DataFrame = fld, ntfld: pd.
 
     chart = (
         (base.mark_line(strokeWidth=2) + base.mark_point(filled=True, size=60))
-        .properties(title="Days from Referral to Decision by Period", width="container")
+        .properties(title="Days from Referral to Decision by Period")
     )
 
     st.header("📁 Duration of Case Review")
     st.caption("Length of time between case referral and charging decision (file vs. decline), both mean and median.")
-    st.altair_chart(chart, width="container")
+    st.altair_chart(chart)
 
 # Total Cases Filed
 def cases_fld(fld: pd.DataFrame = fld):
@@ -350,7 +350,7 @@ def cases_fld(fld: pd.DataFrame = fld):
             y=alt.Y("total_cases:Q", title="Total Cases Filed"),
             tooltip=["period", "total_cases"],
         )
-        .properties(title="Cases Filed by Period", width="container")
+        .properties(title="Cases Filed by Period")
     )
 
     # Output
@@ -359,7 +359,7 @@ def cases_fld(fld: pd.DataFrame = fld):
     # st.badge() #  # PPI # Justice Counts # Measures for Justice | # View-only 
     # st.divider()
     # st.markdown()
-    st.altair_chart(chart, width="container")
+    st.altair_chart(chart)
     # st.write_stream("hello...")
 
 # Total Cases Not Filed
@@ -384,7 +384,7 @@ def cases_ntfld(ntfld: pd.DataFrame = ntfld):
             y=alt.Y("total_cases:Q", title="Total Cases Not Filed"),
             tooltip=["period", "total_cases"],
         )
-        .properties(title="Cases Not Filed by Period", width="container")
+        .properties(title="Cases Not Filed by Period")
     )
 
     # Output
@@ -393,7 +393,7 @@ def cases_ntfld(ntfld: pd.DataFrame = ntfld):
     # st.badge() #  # PPI # Justice Counts # Measures for Justice | # View-only 
     # st.divider()
     # st.markdown()
-    st.altair_chart(chart, width="container")
+    st.altair_chart(chart)
     # st.write_stream("hello...")
 
 # Total Cases Disposed
@@ -418,7 +418,7 @@ def cases_disp(disp: pd.DataFrame = disp):
             y=alt.Y("total_cases:Q", title="Total Cases Disposed"),
             tooltip=["period", "total_cases"],
         )
-        .properties(title="Cases Disposed by Period", width="container")
+        .properties(title="Cases Disposed by Period")
     )
 
     # Output
@@ -427,36 +427,36 @@ def cases_disp(disp: pd.DataFrame = disp):
     # st.badge() #  # PPI # Justice Counts # Measures for Justice | # View-only 
     # st.divider()
     # st.markdown()
-    st.altair_chart(chart, width="container")
+    st.altair_chart(chart)
     # st.write_stream("hello...")
 
 
 # st.expander 
 
 from stats.ytd_totals import render_ytd_metric
-with st.expander("How many cases has the JCPAO processed year-to-date?", expanded=False, icon=None, width="stretch"):
+with st.expander("How many cases has the JCPAO processed year-to-date?", expanded=False, icon=None):
     render_ytd_metric(RCVD, FLD, NTFLD, DISP)
 
-with st.expander("How many cases has the Office received?", expanded=False, icon=None, width="stretch"):
+with st.expander("How many cases has the Office received?", expanded=False, icon=None):
     cases_rcvd()
 
-with st.expander("What is the status of cases the Office received?", expanded=False, icon=None, width="stretch"):
+with st.expander("What is the status of cases the Office received?", expanded=False, icon=None):
     rcvd_cases_status()
 
-with st.expander("How many cases has the Office filed?", expanded=False, icon=None, width="stretch"):
+with st.expander("How many cases has the Office filed?", expanded=False, icon=None):
     cases_fld()
 
-with st.expander("What is the Office's filing rate (%)?", expanded=False, icon=None, width="stretch"):
+with st.expander("What is the Office's filing rate (%)?", expanded=False, icon=None):
     file_rate()
     st.latex(r"\text{Filing Rate (\%)} = \frac{\text{Cases Filed}}{\text{Cases Filed} + \text{Cases Not Filed}}")
 
-with st.expander("How many cases has the Office not filed?", expanded=False, icon=None, width="stretch"):
+with st.expander("How many cases has the Office not filed?", expanded=False, icon=None):
     cases_ntfld()
 
-with st.expander("How long does the Office take to review a case?", expanded=False, icon=None, width="stretch"):
+with st.expander("How long does the Office take to review a case?", expanded=False, icon=None):
     decision_time()
 
-with st.expander("How many cases has the Office disposed?", expanded=False, icon=None, width="stretch"):
+with st.expander("How many cases has the Office disposed?", expanded=False, icon=None):
     cases_disp()
 
 
