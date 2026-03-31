@@ -1,4 +1,4 @@
-## Personal & Professional Development, by [Connections to Success](https://connectionstosuccess.org/)
+## Personal & Professional Development, by *Connections to Success*
 
 *Need help building skills and confidence to get a job, or to create your life's plan?*   
 
@@ -16,10 +16,10 @@ Equip yourself with the tools and resources needed to reach your personal and pr
 
 :green[**No cost to participate!**]
 
-:green[**Ready to get started?**] For questions or to register, contact our Outreach Coordinator:
-> Renargo Martin  
-> 816-288-2700  
-> rmartin@connectionstosuccess.org   
+:green[**Ready to get started?**] For questions or to register, contact our Connections to Success at:
+> Connections to Success
+> Phone: 816-561-5115
+> Website: [https://connectionstosuccess.org](https://connectionstosuccess.org)  
 
 *We inspire families to realize their dreams and achieve economic independence by providing hope, resources, and a plan. We're here to help you reach your goals!*
 
