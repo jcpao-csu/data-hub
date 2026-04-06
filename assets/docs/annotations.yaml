@@ -56,6 +56,7 @@ received:
   - metric: "By Defendant Age"
     notes: |-
       Demographic breakdown is based on unique cases, not unique defendants. 
+      Age is calculated at date of case referral, not date of incident or arrest.
 
 filed:
   - metric: "By Referring Agency"
@@ -108,6 +109,7 @@ filed:
   - metric: "By Defendant Age"
     notes: |-
       Demographic breakdown is based on unique cases, not unique defendants. 
+      Age is calculated at date of case referral, not date of incident or arrest.
 
 not_filed:
   - metric: "By Referring Agency"
@@ -158,6 +160,7 @@ not_filed:
   - metric: "By Defendant Age"
     notes: |-
       Demographic breakdown is based on unique cases, not unique defendants. 
+      Age is calculated at date of case referral, not date of incident or arrest.
 
 disposed:
   - metric: "By Referring Agency"
@@ -220,3 +223,4 @@ disposed:
   - metric: "By Defendant Age"
     notes: |-
       Demographic breakdown is based on unique cases, not unique defendants. 
+      Age is calculated at date of case referral, not date of incident or arrest.

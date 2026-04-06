@@ -14,7 +14,6 @@ from stats.case_lifecycle_sankey import render_case_lifecycle_sankey
 # --- Page title ---
 
 st.markdown("<h1 style='text-align: center;'>JCPAO Dashboard Overview</h1>", unsafe_allow_html=True)
-st.divider()
 
 
 # --- Load data ---

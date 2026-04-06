@@ -224,7 +224,7 @@ def _render_def_zipcode_metrics(counts: pd.DataFrame, outside_count: int) -> Non
             value=f"{total:,}",
             delta=f"From {pd.Timestamp(str(start)).strftime('%-m/%-d/%Y')} – {pd.Timestamp(str(end)).strftime('%-m/%-d/%Y')}",
             delta_color="off",
-            height=120,
+            # height=120,
             # width=300,
         )
     with c2:
@@ -233,7 +233,7 @@ def _render_def_zipcode_metrics(counts: pd.DataFrame, outside_count: int) -> Non
             value=f"{in_county_total:,}",
             delta=f"{in_county_total / total * 100:.1f}% of total" if total else "—",
             delta_color="off",
-            height=120,
+            # height=120,
             # width=300,
         )
     with c3:
@@ -242,7 +242,7 @@ def _render_def_zipcode_metrics(counts: pd.DataFrame, outside_count: int) -> Non
             value=f"{outside_count:,}",
             delta=f"{outside_count / total * 100:.1f}% of total" if total else "—",
             delta_color="off",
-            height=120,
+            # height=120,
             # width=300,
         )
     with c4:
@@ -251,7 +251,7 @@ def _render_def_zipcode_metrics(counts: pd.DataFrame, outside_count: int) -> Non
             value=top_zip,
             delta=f"{top_zip_count:,} defendants | {top_zip_count / total * 100:.1f}% of total" if total else "—",
             delta_color="off",
-            height=120,
+            # height=120,
             # width=300,
         )
 
@@ -284,7 +284,7 @@ def render_def_zipcode(rcvd: pd.DataFrame) -> None:
         with col_map:
             st_folium(
                 _build_def_zipcode_map(counts, gdf, jc_boundary, demarcations),
-                # width="stretch",
+                width="stretch",
                 height=520,
                 returned_objects=[],
             )

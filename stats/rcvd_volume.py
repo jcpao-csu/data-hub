@@ -92,9 +92,9 @@ def render_rcvd_volume(rcvd: pd.DataFrame) -> None:
         st.header(":material/move_to_inbox: Cases Received")
         tab_bar, tab_line = st.tabs(["Bar Chart", "Line Chart"])
         with tab_bar:
-            st.altair_chart(_build_rcvd_volume_bar(df, title="Cases Received", subtitle=subtitle), width="container")
+            st.altair_chart(_build_rcvd_volume_bar(df, title="Cases Received", subtitle=subtitle))
         with tab_line:
-            st.altair_chart(_build_rcvd_volume_line(df), width="container")
+            st.altair_chart(_build_rcvd_volume_line(df))
 
 
 # --- shared prepare for status-based renders ---
@@ -274,7 +274,7 @@ def render_rcvd_status(
         )
         st.altair_chart(
             _build_rcvd_status_bar(df, is_normalized=(view == "Normalized (%)")),
-            width="container",
+            # width="stretch",
         )
 
 
@@ -484,7 +484,7 @@ def _build_under_review_ts(df: pd.DataFrame, title: str = "", subtitle: str = ""
     return (
         area + line + rule + points + avg_line + event_rules + event_text + event_text_stagger
     ).properties(
-        width="container",
+        # width="stretch",
         title=alt.TitleParams(title, subtitle=subtitle, anchor="start", subtitleColor="#e8edf2"),
     )
 
@@ -513,7 +513,7 @@ def render_under_review(
                     "selected start date are still counted in the running total."
                 ),
             ),
-            width="container",
+            # width="stretch",
         )
         st.divider()
         for note in _HISTORY_FOOTNOTES:

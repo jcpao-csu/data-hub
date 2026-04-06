@@ -18,6 +18,7 @@ dependencies = [
     "streamlit-extras>=1.0.0",
     "streamlit-folium>=0.27.0",
     "streamlit[charts,pdf]>=1.55.0",
+    "scipy>=1.15.0",
     "tabulate>=0.10.0",
     "vl-convert-python>=1.9.0.post1",
 ]
