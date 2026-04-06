@@ -128,7 +128,7 @@ def render_fsd_sidebar() -> tuple[str, tuple]:
         on_click=_reset_fsd_filters,
         type="secondary",
         icon="🔄",
-        # width="stretch",
+        width="stretch",
         help="Restore all filters to their default values.",
     )
 
