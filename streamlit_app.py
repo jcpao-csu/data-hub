@@ -43,7 +43,8 @@ pages = {
         # st.Page("pages/def_pages/demo_cases.py", title="Breakdown by Race"),
         # st.Page("pages/def_pages/by_sex.py", title="Breakdown by Sex"),
         # st.Page("pages/def_pages/by_age.py", title="Breakdown by Age"),
-        st.Page("pages/def_pages/by_zipcode.py", title="Breakdown by ZIP Code"),
+        st.Page("pages/def_pages/by_zipcode.py", title="ZIP Code"),
+        # st.Page("pages/def_pages/by_recidivism.py", title="Recidivism"), # Re-Referral Activity
         # st.Page("pages/def_pages/prod.py", title="Defendant Production Map"),
     ],
     # "Violent Crime in KCMO": [
@@ -57,14 +58,14 @@ pages = {
     #     # st.Page("pages/dv_pages/stalking_cases.py", title="Stalking Cases")
     # ],
     "Family Support Division (FSD)": [
-        st.Page("pages/fsd_pages/fsd_main.py", title="Overview"),
+        # st.Page("pages/fsd_pages/fsd_main.py", title="Overview"),
         st.Page("pages/fsd_pages/fsd_data.py", title="Explore the Data"),
         st.Page("pages/fsd_pages/fsd_resources.py", title="Resources"),
     ],
-    # "Other": [
-    #     st.Page("pages/other_pages/blairs_law.py", title="Blair's Law"),
-    #     st.Page("pages/other_pages/valentines_law.py", title="Valentine's Law")
-    # ],
+    "Other": [
+        st.Page("pages/other_pages/blairs_law.py", title="Blair's Law"),
+        st.Page("pages/other_pages/valentines_law.py", title="Valentine's Law")
+    ],
     "Resources": [
         st.Page("pages/resources_pages/about_jcpao.py", title="About the JCPAO"),
         st.Page("pages/resources_pages/learn_more.py", title="Process of a Case"),
