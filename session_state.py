@@ -332,7 +332,7 @@ def render_sidebar(
                 icon=":material/filter_alt:",
                 type="primary",
                 disabled=submit_button_disabled,
-                # width="stretch",
+                width="stretch",
             )
 
     # Reset button lives outside the form so it's always clickable
@@ -342,7 +342,7 @@ def render_sidebar(
         type="secondary",
         icon="🔄",
         disabled=reset_button_disabled,
-        # width="stretch",
+        width="stretch",
         help="Restore all filters to their default values.",
     )
 
