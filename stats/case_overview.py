@@ -93,8 +93,8 @@ _DISP_RANK_CATEGORY = {
 _STATUS_MAP = {
     "Received":  "#4da6ff",
     "Filed":     "#3db87a",
-    "Not Filed": "#f5c842",
-    "Disposed":  "#e05c5c",
+    "Not Filed": "#e05c5c", # "#f5c842",
+    "Disposed":  "#9b72e6", # "#e05c5c",
 }
 
 # Available breakdown options per status (displayed in right-column selectbox)
@@ -967,10 +967,13 @@ def _prepare_file_rate_status(
     """
     Compute file rate for completed-review cases in the selected period.
 
+    Numerator (filed) = fld cases ∪ plea deal dismissals (min_ntfld_rank == 0).
+    Set union deduplicates pbk_nums that appear in both.
+
     Denominator excludes from ntfld:
       - PFI cases (min_ntfld_rank == 3) — still potentially fileable
-      - Plea deal dismissals (min_ntfld_rank == 0) — resolved via negotiation
-      - Cases eventually filed (pbk_num in fld_all) — should count as filed
+      - Plea deal dismissals (min_ntfld_rank == 0) — counted as filed in numerator
+      - Cases eventually filed (pbk_num in fld_all) — counted as filed in numerator
 
     Returns a two-row DataFrame with columns: file_status, count, pct, file_rate.
     """
@@ -986,11 +989,13 @@ def _prepare_file_rate_status(
 
     # Exclusions from not-filed denominator
     eventually_filed_ids = set(fld_all["pbk_num"].dropna())
+    fld_ids = set(fld_df["pbk_num"].dropna())
+    plea_deal_ids = set(ntfld_df[ntfld_df["min_ntfld_rank"] == 0]["pbk_num"].dropna())
     ntfld_df = ntfld_df[ntfld_df["min_ntfld_rank"] != 3]          # exclude PFI
     ntfld_df = ntfld_df[ntfld_df["min_ntfld_rank"] != 0]          # exclude plea deal dismissal
     ntfld_df = ntfld_df[~ntfld_df["pbk_num"].isin(eventually_filed_ids)]  # exclude eventually filed
 
-    n_filed     = fld_df["pbk_num"].nunique()
+    n_filed     = len(fld_ids | plea_deal_ids)  # union deduplicates
     n_not_filed = ntfld_df["pbk_num"].nunique()
     total       = n_filed + n_not_filed
     file_rate   = round(n_filed / total * 100, 1) if total else 0.0
@@ -1897,7 +1902,7 @@ def render_case_volume(
         "Disposed":  disp,
     }
 
-    col_left, col_right = st.columns(2, gap="medium")
+    col_left, col_right = st.columns(2, gap="small")
 
     with col_left:
         selected_status = st.selectbox(
