@@ -17,9 +17,9 @@ Equip yourself with the tools and resources needed to reach your personal and pr
 :green[**No cost to participate!**]
 
 :green[**Ready to get started?**] For questions or to register, contact our Connections to Success at:
-> Connections to Success
-> Phone: 816-561-5115
-> Website: [https://connectionstosuccess.org](https://connectionstosuccess.org)  
+> Connections to Success   
+> Phone: 816-561-5115   
+> Website: [https://connectionstosuccess.org](https://connectionstosuccess.org)    
 
 *We inspire families to realize their dreams and achieve economic independence by providing hope, resources, and a plan. We're here to help you reach your goals!*
 
